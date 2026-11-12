@@ -8,6 +8,7 @@ class LabTests(unittest.TestCase):
         self.disk = {
             "Number": 2, "Model": "HGST HTS 725050B7E630 USB Device",
             "FriendlyName": "HGST HTS 725050B7E630", "Size": DEFAULT_SIZE,
+            "Win32Size": 500_105_249_280,
             "BusType": "USB", "IsBoot": False, "IsSystem": False,
             "IsOffline": False, "OperationalStatus": "Online",
         }
@@ -22,6 +23,11 @@ class LabTests(unittest.TestCase):
     def test_rejects_wrong_capacity(self):
         with self.assertRaisesRegex(RuntimeError, "size mismatch"):
             identify([self.disk], 2, "HTS725050B7E630", DEFAULT_SIZE - 1)
+
+    def test_rejects_bad_win32_capacity(self):
+        self.disk["Win32Size"] = 0
+        with self.assertRaisesRegex(RuntimeError, "Win32 disk capacity"):
+            identify([self.disk], 2, "HTS725050B7E630", DEFAULT_SIZE)
 
     def test_rejects_system_disk(self):
         self.disk["IsSystem"] = True
