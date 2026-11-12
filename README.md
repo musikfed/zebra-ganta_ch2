@@ -170,3 +170,6 @@ uv run python tools/compare_usb_bridges.py --usb2-scan 'results\ПУТЬ_К_USB2
 ```
 
 Пути выше — заполнители, не готовые файлы. Старые серии 001–003 остаются в своём исходном формате. См. [подробный протокол 004](docs/experiments/004-usb2-vs-usb3-hgst-protocol.md).
+
+
+**Обновление USBView 13.11.2026:** новый мост док-станции ORICO представлен как VIA Labs `2109:0715`, фактически подключён по **SuperSpeed 5 Гбит/с**; Windows отображает USB Mass Storage **UAS**. USB 3.1 в `bcdUSB` и заявленная поддержка SuperSpeedPlus 10 Гбит/с не означают текущую скорость 10 Гбит/с. Результаты чтения HGST через ORICO отсутствуют. Сверить PnP/HGST до запуска `experiment004.py`.
