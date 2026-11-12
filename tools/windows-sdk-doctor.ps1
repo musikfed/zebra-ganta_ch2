@@ -1,7 +1,9 @@
-# PEGINELAB Windows SDK Doctor v4: read-only. Windows PowerShell 5.1+.
+param([switch]$BuildTest)
+# PEGINELAB Windows SDK Doctor v5: read-only. Windows PowerShell 5.1+.
 # No downloads, registry edits, PATH modifications or installation.
+# Optional -BuildTest creates a tiny C source/EXE in TEMP and removes it afterward.
 $ErrorActionPreference = 'Continue'
-Write-Host '=== PEGINELAB Windows SDK Doctor v4 ===' -ForegroundColor Cyan
+Write-Host '=== PEGINELAB Windows SDK Doctor v5 ===' -ForegroundColor Cyan
 Write-Host ('Windows: ' + [Environment]::OSVersion.VersionString)
 Write-Host ('PowerShell: ' + $PSVersionTable.PSVersion)
 Write-Host ('Architecture x64 OS: ' + [Environment]::Is64BitOperatingSystem)
@@ -102,7 +104,7 @@ foreach($name in @('python','py','uv','git','cl','link','signtool','wpr','wpa','
   $cmd=Get-Command $name -ErrorAction SilentlyContinue
   if($cmd){
     $value=$cmd.Source
-    if($name -eq 'python' -and $value -match 'WindowsApps'){Report WARN $name ('WindowsApps execution alias, may not be real Python: '+$value)}
+    if($name -eq 'python' -and $value -match 'WindowsApps'){Report INFO $name ('WindowsApps execution alias; verify actual interpreter below: '+$value)}
     elseif($name -eq 'cl' -or $name -eq 'link'){Report INFO $name ('Current PATH: '+$value+' (Developer Prompt is preferred)')}
     else {Report OK $name $value}
   } else {
@@ -122,4 +124,58 @@ Write-Host '=== Summary ===' -ForegroundColor Cyan
 if($hasHeaders -and $hasLibs){Report OK 'SDK x64 headers/libraries' 'Available'}
 else{Report WARN 'SDK x64 headers/libraries' 'Not verified'}
 Report INFO 'USBView' 'Optional diagnostic utility. SDK may be installed with only some features; check installer component selections.'
-Report INFO 'Security' 'Read-only diagnostics; no environment settings changed'
+Report INFO 'Security' 'Default checks read-only; -BuildTest only writes disposable files in TEMP, never on HGST T:'
+
+Write-Host ''
+Write-Host '--- OPTIONAL REAL WINAPI BUILD ---' -ForegroundColor Cyan
+if(!$BuildTest){
+  Report INFO 'Compile/run smoke test' 'Not run. To test: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\windows-sdk-doctor.ps1 -BuildTest'
+} elseif(!$devcmd -or !(Test-Path -LiteralPath $devcmd)){
+  Report WARN 'Compile/run smoke test' 'VsDevCmd.bat missing'
+} elseif(!$hasHeaders -or !$hasLibs){
+  Report WARN 'Compile/run smoke test' 'SDK x64 Windows.h/kernel32.lib missing. No build attempted.'
+} else {
+  # All generated files remain in a unique temporary directory, never on the HDD under test.
+  $work=Join-Path $env:TEMP ('peginelab-sdk-smoke-'+[guid]::NewGuid().ToString('N'))
+  New-Item -ItemType Directory -Path $work -ErrorAction Stop | Out-Null
+  try {
+    $sourcePath=Join-Path $work 'sdk_smoke.c'
+    $exePath=Join-Path $work 'sdk_smoke.exe'
+    $cmdPath=Join-Path $work 'build.cmd'
+    @'
+#include <windows.h>
+#include <stdio.h>
+int main(void) {
+  printf("PEGINELAB_SDK_OK pid=%lu\n", (unsigned long)GetCurrentProcessId());
+  return 0;
+}
+'@ | Set-Content -LiteralPath $sourcePath -Encoding Ascii
+    $cmdLines=@(
+      '@echo off',
+      'call "'+$devcmd+'" -arch=amd64 -host_arch=amd64 >nul',
+      'if errorlevel 1 exit /b 11',
+      'cd /d "'+$work+'"',
+      'cl.exe /nologo /W3 /TC "'+$sourcePath+'" /link /OUT:"'+$exePath+'"',
+      'exit /b %errorlevel%'
+    )
+    $cmdLines | Set-Content -LiteralPath $cmdPath -Encoding Ascii
+    # cmd /s /c expects an outer quote pair when the batch file path includes spaces.
+    $cmdArg='""'+$cmdPath+'""'
+    $output=& $env:ComSpec /d /s /c $cmdArg 2>&1 | Out-String
+    $rc=$LASTEXITCODE
+    if($rc -eq 0 -and (Test-Path -LiteralPath $exePath)){
+      $appOutput=& $exePath 2>&1 | Out-String
+      if($LASTEXITCODE -eq 0 -and $appOutput -match 'PEGINELAB_SDK_OK'){
+        Report OK 'Real WinAPI compile/link/run' $appOutput.Trim()
+      }else{Report WARN 'Built program execution' $appOutput.Trim()}
+    }else{
+      Report WARN 'Real WinAPI compile/link' ('Exit='+$rc)
+      Write-Host $output
+    }
+  } catch {Report WARN 'Build test exception' $_.Exception.Message}
+  finally {
+    if(Test-Path -LiteralPath $work){
+      Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
+    }
+  }
+}
