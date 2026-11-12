@@ -69,3 +69,22 @@ uv run python tools/compare_usb_bridges.py --usb2-scan results\USB2_СЕРИЯ\m
 - По одному только USBView ещё нельзя доказать соответствие выбранного USB-моста конкретному HGST без отчёта `lab.py inspect` / PnP-цепочки; абсолютная скорость и задержки при новом подключении пока **не измерены**.
 
 **Методологический смысл:** сравнение теперь противопоставляет *JMicron + USB2 High-Speed + BOT* и *VIA Labs + USB3 SuperSpeed + UASP*. Оно не изолирует единственную переменную «версия USB»; новое подключение меняет также контроллер, протокол и питание.
+
+## Фаза 1 после подтверждения ORICO SuperSpeed: инвентаризация, без чтения
+
+Новое подключение USBView показало VIA Labs VID:PID 2109:0715, SuperSpeed, UAS; теперь требуется удостовериться, что этот мост ведёт именно к исследуемому HGST и Windows не перенумеровала диск. **Не запускать старые `lab.py scan` и `transitions.py` с фиксированным Disk 2.**
+
+На Acer запустить по очереди:
+
+```powershell
+cd F:\zebra-ganta_ch2
+git pull --ff-only origin main
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\exp004-preflight.ps1
+uv run python lab.py inspect
+```
+
+Сохранить вывод `exp004-preflight.ps1` (Number, Model, GetDiskSize, Win32Size, Letters, PNPDeviceID, IsSystem/IsBoot) для сверки с ORICO. Программа не читает физические сектора и не пишет на диск.
+
+Только если модель/ёмкости/тип USB/том и цепочка PnP соответствуют устройству, допускается последующий **ограниченный read-only** запуск `experiment004.py` с фактическими аргументами. `--link-speed Super --vidpid 2109:0715` — данные USBView, которые программа только записывает в манифест; их ещё требуется связать с HGST.
+
+Для сопоставимости с опытом 001 параметры: `--samples 5 --mib 16 --repeats 3`. Для near/far: `--pairs 20 --seed 20261112`; по возможности повторить независимые серии. Результаты на F:. Не публиковать ничего как реальные измерения до появления CSV.
