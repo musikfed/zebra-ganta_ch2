@@ -1,7 +1,7 @@
-# PEGINELAB Windows SDK Doctor v3: read-only. Windows PowerShell 5.1+.
+# PEGINELAB Windows SDK Doctor v4: read-only. Windows PowerShell 5.1+.
 # No downloads, registry edits, PATH modifications or installation.
 $ErrorActionPreference = 'Continue'
-Write-Host '=== PEGINELAB Windows SDK Doctor v3 ===' -ForegroundColor Cyan
+Write-Host '=== PEGINELAB Windows SDK Doctor v4 ===' -ForegroundColor Cyan
 Write-Host ('Windows: ' + [Environment]::OSVersion.VersionString)
 Write-Host ('PowerShell: ' + $PSVersionTable.PSVersion)
 Write-Host ('Architecture x64 OS: ' + [Environment]::Is64BitOperatingSystem)
@@ -84,9 +84,16 @@ if($vsPath){
   if($compilers.Count -gt 0){
     $clPath=$compilers[0]
     Report OK 'MSVC x64 compiler file' $clPath
+    # cl /Bv without an input file can return nonzero even though cl.exe works.
+    # Detect the compiler banner but do not call this a successful C++ build.
     $v=RunCommand $clPath @('/Bv')
-    if($v.Exit -eq 0){Report OK 'cl.exe /Bv' (($v.Text -split "[\r\n]+" | Select-Object -First 3) -join ' | ')}
-    else {Report WARN 'cl.exe /Bv outside developer environment' ('Exit '+$v.Exit+'; '+($v.Text -split "[\r\n]+" | Select-Object -First 2))}
+    if($v.Text -match 'C/C\+\+ Optimizing Compiler Version'){
+      $banner=($v.Text -split "[\r\n]+" | Where-Object {$_ -match 'C/C\+\+ Optimizing Compiler Version'} | Select-Object -First 1)
+      Report OK 'MSVC compiler version detected' $banner.Trim()
+      Report INFO 'C++ compilation' 'Not tested; /Bv without a source file may exit 2. Windows SDK headers/libraries must be available for WinAPI builds.'
+    }else{
+      Report WARN 'MSVC executable response' ('Exit '+$v.Exit+'; '+($v.Text -split "[\r\n]+" | Select-Object -First 2))
+    }
   } else {Report WARN 'MSVC x64 compiler' 'No cl.exe under VC\Tools\MSVC; install C++ build tools workload'}
 }
 Write-Host ''
