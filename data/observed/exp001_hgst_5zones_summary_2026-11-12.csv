@@ -1,0 +1,6 @@
+position_percent,median_MB_s,min_MB_s,max_MB_s,repeat_count,source
+5,37.88,19.90,37.94,3,user_console_transcript
+27.5,37.78,37.61,38.50,3,user_console_transcript
+50,37.52,37.06,37.62,3,user_console_transcript
+72.5,36.81,36.61,37.11,3,user_console_transcript
+95,37.66,36.66,38.58,3,user_console_transcript
