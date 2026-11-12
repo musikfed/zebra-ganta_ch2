@@ -1,0 +1,36 @@
+{
+  "schema": "zebra-ganta.exp004.v1",
+  "timestamp_utc": "2026-11-12T21:45:43.743724+00:00",
+  "bridge": "usb3-orico",
+  "reported_dock": "ORICO 6139C3-EU-CR-BP",
+  "reported_cable": "USB-C to USB-C",
+  "reported_power": "separate 12V dock power",
+  "usbview_negotiated_link_speed_manual": "Super",
+  "usbview_vidpid_manual": "2109:0715",
+  "disk": {
+    "Number": 2,
+    "FriendlyName": "HGST HTS 725050B7E630",
+    "Model": "HGST HTS 725050B7E630 SCSI Disk Device",
+    "Size": 500106780160,
+    "Win32Size": 500105249280,
+    "BusType": "USB",
+    "IsBoot": false,
+    "IsSystem": false,
+    "IsOffline": false,
+    "OperationalStatus": "Online"
+  },
+  "letter": "T",
+  "disk_number": 2,
+  "win32_size_expected": 500105249280,
+  "scan_samples": 5,
+  "scan_mib": 16,
+  "scan_repeats": 3,
+  "transition_pairs": 20,
+  "seed": 20261112,
+  "limits": [
+    "Windows+USB latency, not isolated head seek",
+    "cache not isolated",
+    "USBView notes manually entered; not cross-checked by this program",
+    "no inference of HDD optimization speedup"
+  ]
+}
