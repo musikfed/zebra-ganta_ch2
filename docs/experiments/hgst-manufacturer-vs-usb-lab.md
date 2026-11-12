@@ -63,3 +63,20 @@
 «В настоящем исследовании был использован реальный 2,5-дюймовый HDD HGST Travelstar Z7K500.B. Цель опытов — изучить влияние логического расстояния чтения на наблюдаемую задержку и оценить потенциальные ограничения макрополосной модели. Паспортные характеристики производителя, результаты через USB и расчётные модели разделяются. Никакое увеличение производительности заранее не гарантировалось и не было доказано представленными опытами».
 
 **Обязательное правило:** любые новые измерения сохранять со способом подключения; не переносить паспортные 163 МБ/с в качестве фактической скорости текущего экземпляра HDD.
+
+
+## Диагностика Windows SDK и USBView после установки (12 ноября 2026)
+
+Самим Python-скриптам Zebra Ganta (`lab.py`, `transitions.py`, `analyze_transitions.py`) **не требуется** Windows SDK. Его USBView и диагностические средства полезны для отдельной проверки USB–SATA моста, но не доказывают скорость USB-соединения автоматически.
+
+Предыдущий SDK Doctor нашёл Visual Studio Build Tools 18, но `cl.exe` отсутствовал в PATH обычного PowerShell — это нормально вне Developer Command Prompt. Папка `C:\Program Files (x86)\Windows Kits\10` существовала, но наличия `Windows.h` и `kernel32.lib` прежняя проверка не подтвердила. `wpr.exe` обнаружился в `C:\Windows\System32`; ряд других диагностических утилит не найден. Python под `WindowsApps` может оказаться execution alias.
+
+Обновлённый [SDK Doctor v2](https://github.com/musikfed/ai_video3060_12G/blob/main/tools/windows-sdk-doctor.ps1) проверяет реальные заголовки и библиотеки, запускает VS `VsDevCmd.bat` в отдельном cmd-процессе и различает WindowsApps alias и доступный Python runtime. Никаких драйверов, PATH или настроек Windows он не меняет.
+
+Одна команда на Acer:
+
+```powershell
+Invoke-WebRequest 'https://raw.githubusercontent.com/musikfed/ai_video3060_12G/main/tools/windows-sdk-doctor.ps1' -OutFile "$env:TEMP\windows-sdk-doctor.ps1"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\windows-sdk-doctor.ps1"
+```
+
+USBView устанавливается не во всяком выбранном наборе SDK; если утилита отсутствует, это не означает неисправности диска. Никакой вывод о физическом seek-time HDD или об ускорении хранения по одному такому обследованию не допускается.
