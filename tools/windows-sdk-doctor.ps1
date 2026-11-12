@@ -1,9 +1,9 @@
 param([switch]$BuildTest)
-# PEGINELAB Windows SDK Doctor v5: read-only. Windows PowerShell 5.1+.
+# PEGINELAB Windows SDK Doctor v6: read-only. Windows PowerShell 5.1+.
 # No downloads, registry edits, PATH modifications or installation.
 # Optional -BuildTest creates a tiny C source/EXE in TEMP and removes it afterward.
 $ErrorActionPreference = 'Continue'
-Write-Host '=== PEGINELAB Windows SDK Doctor v5 ===' -ForegroundColor Cyan
+Write-Host '=== PEGINELAB Windows SDK Doctor v6 ===' -ForegroundColor Cyan
 Write-Host ('Windows: ' + [Environment]::OSVersion.VersionString)
 Write-Host ('PowerShell: ' + $PSVersionTable.PSVersion)
 Write-Host ('Architecture x64 OS: ' + [Environment]::Is64BitOperatingSystem)
@@ -161,10 +161,13 @@ int main(void) {
       'exit /b %errorlevel%'
     )
     $cmdLines | Set-Content -LiteralPath $cmdPath -Encoding Ascii
-    # cmd /s /c expects an outer quote pair when the batch file path includes spaces.
-    $cmdArg='""'+$cmdPath+'""'
-    $output=& $env:ComSpec /d /s /c $cmdArg 2>&1 | Out-String
-    $rc=$LASTEXITCODE
+    # Avoid cmd.exe nested quoting entirely: launch build.cmd from its own
+    # temporary working directory. Quoted paths inside build.cmd are safe.
+    Push-Location -LiteralPath $work
+    try {
+      $output=& $env:ComSpec /d /c 'build.cmd' 2>&1 | Out-String
+      $rc=$LASTEXITCODE
+    } finally { Pop-Location }
     if($rc -eq 0 -and (Test-Path -LiteralPath $exePath)){
       $appOutput=& $exePath 2>&1 | Out-String
       if($LASTEXITCODE -eq 0 -and $appOutput -match 'PEGINELAB_SDK_OK'){
