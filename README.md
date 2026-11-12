@@ -202,3 +202,8 @@ uv run python tools/report_exp004.py 'results\20261112T214543Z-exp004-usb3-orico
 ### Результаты опыта 004: реальные измерения
 
 После анализа оригинальных CSV опыта 004 на Acer через ORICO SuperSpeed получено 15 последовательных чтений с общей медианой **101,722 МБ/с**. Медианы зон LBA 5 / 27,5 / 50 / 72,5 / 95 %: **144,139 / 128,854 / 104,763 / 92,418 / 79,076 МБ/с** (против ~37–38 МБ/с на старом JMicron USB2). Near/far по 20 парам: **10,6513 / 20,4211 мс**, 17 из 20 дальних чтений медленнее. Подробнее в [протоколе 004](docs/experiments/004-usb2-vs-usb3-hgst-protocol.md) и [CSV-сводке](data/observed/exp004_usb2_vs_orico_summary_2026-11-12.csv). Первичные файлы 004 на Acer в `results\20261112T214543Z-exp004-usb3-orico`; в GitHub пока только сводные числа. Это сравнение тракта USB, а не ускорение алгоритма.
+
+
+### Первичные данные опыта 004 уже доступны в GitHub
+
+Автор опубликовал оригинальные `manifest.json`, `measurements.csv`, `observations.csv`, `summary.csv` в [data/raw/exp004-usb3-orico](data/raw/exp004-usb3-orico) (коммит `6eac120`). Графики по каждой точке: [рис. 7.1 USB2/USB3](figures/fig_7_1_usb2_usb3_all_reads.svg), [рис. 3.2 near/far](figures/fig_3_2_usb3_near_far_20pairs.svg). Нечётные пары near-first и чётные far-first имеют заметно разные near-медианы (5,42945 и 18,765 мс). Протокол 004 рассматривает это как значимый эффект порядка/возможного кэширования, а не механический seek-time.
