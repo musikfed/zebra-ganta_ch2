@@ -1,0 +1,17 @@
+metric,usb2_jmicron,usb3_orico,unit,provenance
+link_speed,High-Speed,SuperSpeed,USB mode,USBView
+vid_pid,152D:2338,2109:0715,VID:PID,USBView and PnP
+median_all_15_readings,,101.722,MB/s,USB3 report_exp004.py console output
+minimum_all_15_readings,,30.507,MB/s,USB3 report_exp004.py console output
+maximum_all_15_readings,,168.372,MB/s,USB3 report_exp004.py console output
+zone_5_median,37.88,144.139,MB/s,USB2 exp001 report / USB3 report_exp004.py
+zone_27_5_median,37.78,128.854,MB/s,USB2 exp001 report / USB3 report_exp004.py
+zone_50_median,37.52,104.763,MB/s,USB2 exp001 report / USB3 report_exp004.py
+zone_72_5_median,36.81,92.418,MB/s,USB2 exp001 report / USB3 report_exp004.py
+zone_95_median,37.66,79.076,MB/s,USB2 exp001 report / USB3 report_exp004.py
+near_median_first_20pairs,10.8974,10.6513,ms,USB2 exp003 first run / USB3 exp004
+far_median_first_20pairs,17.0894,20.4211,ms,USB2 exp003 first run / USB3 exp004
+delta_of_medians_first_20pairs,6.1920,9.7698,ms,USB2 exp003 first run / USB3 exp004
+median_paired_differences_first_20pairs,9.2222,10.8942,ms,USB2 exp003 first run / USB3 exp004
+far_slower_count_first_20pairs,14,17,pairs,USB2 exp003 first run / USB3 exp004
+far_faster_count_first_20pairs,6,3,pairs,USB2 exp003 first run / USB3 exp004
