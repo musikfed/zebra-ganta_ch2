@@ -10,6 +10,9 @@ import statistics
 import sys
 import json
 
+# Allow imports from the repository root when invoked as tools/compare_usb_bridges.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 def scan(path: Path) -> dict:
     with path.open(encoding="utf-8-sig", newline="") as fp:
         rows=list(csv.DictReader(fp))
