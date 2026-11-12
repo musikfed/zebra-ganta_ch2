@@ -134,8 +134,10 @@ if(!$BuildTest){
   Report WARN 'Compile/run smoke test' 'VsDevCmd.bat missing'
 } elseif(!$hasHeaders -or !$hasLibs){
   Report WARN 'Compile/run smoke test' 'SDK x64 Windows.h/kernel32.lib missing. No build attempted.'
+} elseif(([System.IO.Path]::GetPathRoot([System.IO.Path]::GetFullPath($env:TEMP))).TrimEnd('\\') -ieq 'T:'){
+  Report WARN 'Compile/run smoke test' 'TEMP points to HDD under test (T:); refusing to write test files.'
 } else {
-  # All generated files remain in a unique temporary directory, never on the HDD under test.
+  # All generated files remain in a unique temporary directory, not on the HDD under test.
   $work=Join-Path $env:TEMP ('peginelab-sdk-smoke-'+[guid]::NewGuid().ToString('N'))
   New-Item -ItemType Directory -Path $work -ErrorAction Stop | Out-Null
   try {
