@@ -122,3 +122,20 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\windows-sdk-doct
 ```
 
 Обычная проверка не меняет систему; `-BuildTest` дополнительно создаёт временный минимальный исходник C, компилирует его через `VsDevCmd.bat` + MSVC + WinAPI, запускает EXE и удаляет временные файлы. **Это не испытание HGST**, не чтение `\\.\PhysicalDrive2`, не запись на `T:` и не доказательство ускорения HDD. Если SDK ещё не предоставил `Windows.h` и `kernel32.lib`, тест сборки пропускается. Все результаты лабораторных экспериментов из `results/` сохраняются.
+
+## USB–SATA JMicron: безопасный осмотр подключения HGST
+
+После успешной проверки SDK Doctor v7 и запуска USBView проводится **только инвентаризация USB-подключения**, без повторных чтений HDD, без записей, без SMART-команд и без изменения драйверов. Новый `tools/usb-bridge-inspect.ps1` проверяет ожидаемые Disk 2, модель HGST HTS725050B7E630, тип USB, букву тома T:, затем выводит PNPDeviceID и по возможности цепочку родительских PnP-устройств.
+
+В Windows PowerShell (команды выполнять последовательно):
+
+```powershell
+Set-Location F:\zebra-ganta_ch2
+git pull --ff-only origin main
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\usb-bridge-inspect.ps1
+& 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\usbview.exe'
+```
+
+В USBView выбрать **конкретное USB Mass Storage/JMicron**, сравнить VID/PID и цепочку с выводом PowerShell, а затем в правой панели сохранить `Device Bus Speed`, `Supported USB Protocols`, `idVendor`, `idProduct` и сведения о соединении. Не путать максимальную поддержку порта с фактически согласованной скоростью устройства; не считать название `xHCI` доказательством SuperSpeed. Если связь с диском не установлена достоверно, скорость оставить **неопределённой**, а не угадывать по 37–38 МБ/с.
+
+Сценарий не сохраняет отчёт на HDD T:, не обращается к `\\.\PhysicalDrive2` и не устанавливает драйверы. При несовпадении модели, номера, USB-типa или буквы тома он остановится; это намеренная защита. USBView может требовать запуск от администратора для отдельных сведений.
