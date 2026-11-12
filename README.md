@@ -112,7 +112,7 @@ uv run python analyze_transitions.py results\20261112T185114Z-transitions\observ
 
 ## Проверка Windows SDK после установки на Acer
 
-В `tools/windows-sdk-doctor.ps1` находится SDK Doctor v5. После установки Windows SDK сначала обновите локальную копию, **затем** запускайте проверку (команды по порядку):
+В `tools/windows-sdk-doctor.ps1` находится SDK Doctor v7. После установки Windows SDK сначала обновите локальную копию, **затем** запускайте проверку (команды по порядку):
 
 ```powershell
 Set-Location F:\zebra-ganta_ch2
@@ -147,7 +147,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\usb-bridge-inspe
 
 ## Эксперимент 004 — старый USB 2.0 против ORICO USB-C
 
-**Исходный стенд:** JMicron 152D:2338 действительно работал в USB High-Speed (по USBView). **Новый стенд:** ORICO 6139C3-EU-CR-BP, SATA, USB-C ↔ USB-C к Acer, независимое питание 12 В. До получения USBView новой док-станции её реальная согласованная скорость **неизвестна**.
+**Исходный стенд:** JMicron 152D:2338 действительно работал в USB High-Speed (по USBView). **Новый стенд:** ORICO 6139C3-EU-CR-BP, SATA, USB-C ↔ USB-C к Acer, независимое питание 12 В. USBView подтвердил VIA Labs 2109:0715, фактический **SuperSpeed 5 Гбит/с**, устройство Windows — UAS; реальные МБ/с HDD ещё не измерены.
 
 Созданы `experiment004.py` (защищённые, только читающие реальные замеры, режимы `usb2-jmicron` и `usb3-orico`) и `tools/compare_usb_bridges.py` (анализатор ранее записанных CSV, без доступа к диску). **Старые `lab.py` и `transitions.py` не изменены; они привязаны к исходному Disk 2.**
 
@@ -173,3 +173,16 @@ uv run python tools/compare_usb_bridges.py --usb2-scan 'results\ПУТЬ_К_USB2
 
 
 **Обновление USBView 13.11.2026:** новый мост док-станции ORICO представлен как VIA Labs `2109:0715`, фактически подключён по **SuperSpeed 5 Гбит/с**; Windows отображает USB Mass Storage **UAS**. USB 3.1 в `bcdUSB` и заявленная поддержка SuperSpeedPlus 10 Гбит/с не означают текущую скорость 10 Гбит/с. Результаты чтения HGST через ORICO отсутствуют. Сверить PnP/HGST до запуска `experiment004.py`.
+
+### Следующее действие: только безопасный preflight ORICO
+
+Выполнить последовательно:
+
+```powershell
+cd F:\zebra-ganta_ch2
+git pull --ff-only origin main
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\exp004-preflight.ps1
+uv run python lab.py inspect
+```
+
+Новый `tools/exp004-preflight.ps1` не читает сырые сектора, не меняет устройство и не сохраняет файлы. Нужны точные значения `Number`, `Model`, `GetDiskSize`, `Win32Size`, `Letters`, `PNPDeviceID`, `IsBoot`, `IsSystem`. **Пока не запускать** `experiment004.py` или старую команду с Disk 2 без перепроверки связи ORICO ↔ HGST.
