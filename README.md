@@ -81,7 +81,6 @@ uv run python lab.py scan --disk 2 --expect-model HTS725050B7E630 --expect-size 
 Set-Location F:\zebra-ganta_ch2
 git pull --ff-only
 uv sync --python 3.14.4
-uv run python -m unittest discover -s tests -v
 Test-Path .\analyze_transitions.py
 uv run python -m unittest discover -s tests -v
 uv run python analyze_transitions.py results\20261112T185114Z-transitions\observations.csv results\20261112T185549Z-transitions\observations.csv results\20261112T185935Z-transitions\observations.csv
