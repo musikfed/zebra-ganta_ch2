@@ -1,0 +1,4 @@
+run_id,source_directory,pairs,near_median_ms,far_median_ms,difference_of_medians_ms,median_of_paired_differences_ms,far_slower_count,far_equal_count,far_faster_count,near_min_ms,near_max_ms,far_min_ms,far_max_ms,paired_delta_min_ms,paired_delta_max_ms,provenance
+1,20261112T185114Z-transitions,20,10.8974,17.0894,6.1920,9.2222,14,0,6,4.5895,24.5745,14.2597,28.2566,-10.3148,22.7586,analyzer_stdout_original_csv_on_acer
+2,20261112T185549Z-transitions,20,10.95935,17.12115,6.1618,9.0640,14,0,6,4.7208,24.7255,14.1930,24.3583,-10.5325,14.7150,analyzer_stdout_original_csv_on_acer
+3,20261112T185935Z-transitions,40,10.9342,19.0528,8.1186,9.6610,31,0,9,4.8598,26.6015,14.4223,28.5443,-5.5180,16.5597,analyzer_stdout_original_csv_on_acer
