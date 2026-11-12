@@ -186,3 +186,14 @@ uv run python lab.py inspect
 ```
 
 Новый `tools/exp004-preflight.ps1` не читает сырые сектора, не меняет устройство и не сохраняет файлы. Нужны точные значения `Number`, `Model`, `GetDiskSize`, `Win32Size`, `Letters`, `PNPDeviceID`, `IsBoot`, `IsSystem`. **Пока не запускать** `experiment004.py` или старую команду с Disk 2 без перепроверки связи ORICO ↔ HGST.
+
+
+### Опыт 004 проведён на ORICO — получить реальные числа из локальных CSV
+
+PnP-цепочка связала HGST Disk 2 с VIA Labs `2109:0715` (UAS); USBView показал SuperSpeed. На Acer успешно выполнено чтение 5 зон × 3 повтора и 20 пар near/far. Папка результатов: `F:\zebra-ganta_ch2\results\20261112T214543Z-exp004-usb3-orico`. Содержимое CSV ещё не опубликовано; для читабельной сводки после `git pull` запускать:
+
+```powershell
+uv run python tools/report_exp004.py 'results\20261112T214543Z-exp004-usb3-orico'
+```
+
+Сценарий только читает готовые `manifest.json`, `measurements.csv` и `observations.csv` с диска F:, **не обращается к физическому HGST**. Вывод сравнить с предыдущими исходными CSV USB 2.0; не делать вывод об алгоритмическом ускорении.
