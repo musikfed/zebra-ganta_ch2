@@ -8,7 +8,7 @@
 
 - Контроллер: ноутбук Acer Swift 3 SF314-41; Ryzen 5 3500U, 20 ГБ RAM, Windows 11 Pro.
 - Два SSD ноутбука **не участвуют** в испытаниях: AMD R5SL120G (Disk 0), SK hynix HFM512GDJTNG-8310A (Disk 1).
-- Образец: **HGST HTS725050B7E630**, 500 105 249 280 байт, Windows **Disk 2**, USB–SATA JMicron, NTFS **T:**.
+- Образец: **HGST HTS725050B7E630**, 500 106 780 160 байт (Get-Disk); 500 105 249 280 байт (Win32_DiskDrive), Windows **Disk 2**, USB–SATA JMicron, NTFS **T:**.
 - Раздел T: начинается с 16 777 216 байт; размер кластера NTFS — 4096 байт.
 - Данные Windows до опыта: 335 ч наработки; 6071 циклов парковки; 986 запусков/остановок; температура 29 °C.
 - Полный ATA SMART через текущий USB-мост не получен: smartctl возвращает `IOCTL_SCSI_PASS_THROUGH ... Error=5`. Состояние поверхности не подтверждено.
@@ -24,7 +24,7 @@
 Set-Location F:\
 git clone https://github.com/musikfed/zebra-ganta_ch2.git
 Set-Location F:\zebra-ganta_ch2
-uv sync --python 3.14
+uv sync --python 3.14.4
 uv run python lab.py inspect
 uv run python -m unittest discover -s tests -v
 ```
@@ -42,10 +42,10 @@ uv run python lab.py inspect
 
 **Измерения выполняются нативно в Windows**, а не в WSL: скрипт использует `Get-Disk`, Windows CIM и `\\.\PhysicalDrive2`. WSL подходит для разработки, документации и анализа полученных CSV, но не является прямой заменой нативного доступа к USB–SATA устройству. Результаты из WSL могут иметь другие задержки из-за виртуализованного стека I/O.
 
-Проверьте, что вывод `inspect` показывает именно HGST, Disk 2, USB и несистемное устройство. Затем откройте PowerShell **от имени администратора**, перейдите в `F:\zebra-ganta_ch2` и запустите **одной строкой**:
+Проверьте, что вывод `inspect` показывает именно HGST, Disk 2, USB и несистемное устройство. **Windows сообщает две различающиеся ёмкости**: `Get-Disk.Size = 500106780160` и `Win32_DiskDrive.Size = 500105249280`. Эти значения зафиксированы раздельно; приложение сверяет оба с наблюдениями стенда, а не подменяет их предполагаемой заводской ёмкостью. При новом расхождении опыт будет остановлен. Затем откройте PowerShell **от имени администратора**, перейдите в `F:\zebra-ganta_ch2` и запустите **одной строкой**:
 
 ```powershell
-uv run python lab.py scan --disk 2 --expect-model HTS725050B7E630 --expect-size 500105249280 --samples 5 --mib 16 --repeats 3
+uv run python lab.py scan --disk 2 --expect-model HTS725050B7E630 --expect-size 500106780160 --samples 5 --mib 16 --repeats 3
 ```
 
 Команда проверит модель, размер, статус System/Boot и право на открытие устройства; запросит явное подтверждение по фразе `READ HGST DISK 2`. **Вводите фразу только после проверки паспорта на экране.**
