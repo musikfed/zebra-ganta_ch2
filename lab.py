@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 import json
 import math
 import os
+import re
 from pathlib import Path
 import statistics
 import subprocess
@@ -20,7 +21,8 @@ import sys
 import time
 
 EXPECTED_TARGET = "HTS725050B7E630"
-DEFAULT_SIZE = 500_105_249_280
+DEFAULT_SIZE = 500_106_780_160
+WIN32_REPORTED_SIZE = 500_105_249_280
 MIB = 1024 * 1024
 ALIGNMENT = 4096
 SCHEMA = "peginelab.hddlab.001.v1"
@@ -53,6 +55,7 @@ def inventory():
         "$w = Get-CimInstance Win32_DiskDrive | Where-Object { $_.Index -eq $d.Number } | Select-Object -First 1; "
         "[PSCustomObject]@{ Number=[int]$d.Number; FriendlyName=[string]$d.FriendlyName; "
         "Model=[string]$w.Model; Size=[int64]$d.Size; "
+        "Win32Size=[int64]$w.Size; "
         "BusType=[string]$d.BusType; IsBoot=[bool]$d.IsBoot; "
         "IsSystem=[bool]$d.IsSystem; IsOffline=[bool]$d.IsOffline; "
         "OperationalStatus=[string]$d.OperationalStatus } "
@@ -62,16 +65,25 @@ def inventory():
     return obj if isinstance(obj, list) else [obj]
 
 
+def normalize_model(value: str) -> str:
+    """Allow vendor-inserted spaces but not missing/replaced model characters."""
+    return re.sub(r"[^A-Z0-9]", "", value.upper())
+
+
 def identify(items, number: int, model_fragment: str, expected_size: int):
     matches = [d for d in items if int(d["Number"]) == number]
     if len(matches) != 1:
         raise RuntimeError("Disk number missing or ambiguous. No read attempted.")
     disk = matches[0]
     model = (disk.get("Model") or "") + " " + (disk.get("FriendlyName") or "")
-    if model_fragment.casefold() not in model.casefold():
+    if normalize_model(model_fragment) not in normalize_model(model):
         raise RuntimeError("Disk model mismatch. No read attempted: " + model)
     if int(disk.get("Size", 0)) != expected_size:
         raise RuntimeError("Disk size mismatch. No read attempted.")
+    # Cross-check both Windows inventory APIs; USB bridges may report
+    # slightly different geometry. Record that discrepancy, never ignore it.
+    if int(disk.get("Win32Size", 0)) != WIN32_REPORTED_SIZE:
+        raise RuntimeError("Win32 disk capacity differs from documented value. No read attempted.")
     if disk.get("IsBoot") or disk.get("IsSystem"):
         raise RuntimeError("Refusing system or boot disk.")
     if disk.get("IsOffline"):
@@ -170,7 +182,7 @@ def run_scan(args):
     items = inventory()
     disk = identify(items, args.disk, args.expect_model, args.expect_size)
     print("\nVERIFIED TARGET (read-only):")
-    for key in ("Number", "Model", "FriendlyName", "Size", "BusType",
+    for key in ("Number", "Model", "FriendlyName", "Size", "Win32Size", "BusType",
                 "IsSystem", "IsBoot", "OperationalStatus"):
         print(f"  {key}: {disk.get(key)}")
     print("\nWARNING: raw device access may fail under USB/Windows.")
@@ -181,7 +193,9 @@ def run_scan(args):
     if confirm != expected:
         raise RuntimeError("Not confirmed. Nothing read.")
     # Guard against device renumbering or hot-swap between confirmation and open.
-    identify(inventory(), args.disk, args.expect_model, args.expect_size)
+    fresh = identify(inventory(), args.disk, args.expect_model, args.expect_size)
+    if fresh != disk:
+        raise RuntimeError("Disk inventory changed since confirmation. No read attempted.")
     length = args.mib * MIB
     zones = offsets(args.expect_size, args.samples, length)
     # Results path is local working directory, not USB drive.
