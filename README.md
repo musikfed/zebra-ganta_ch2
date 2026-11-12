@@ -109,3 +109,16 @@ uv run python analyze_transitions.py results\20261112T185114Z-transitions\observ
 Исходный код не выполняет операций записи, форматирования, изменения таблицы разделов или SMART self-test. Чтение изношенного HDD тоже может проявить существующую неисправность: не используйте единственную копию ценных данных. Режим по умолчанию ограничен несколькими небольшими областями, а не сплошным полным сканированием 500 ГБ.
 
 Лицензия: MIT (см. LICENSE).
+
+## Проверка Windows SDK после установки на Acer
+
+В `tools/windows-sdk-doctor.ps1` находится SDK Doctor v5. После установки Windows SDK сначала обновите локальную копию, **затем** запускайте проверку (команды по порядку):
+
+```powershell
+Set-Location F:\zebra-ganta_ch2
+git pull --ff-only origin main
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\windows-sdk-doctor.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\windows-sdk-doctor.ps1 -BuildTest
+```
+
+Обычная проверка не меняет систему; `-BuildTest` дополнительно создаёт временный минимальный исходник C, компилирует его через `VsDevCmd.bat` + MSVC + WinAPI, запускает EXE и удаляет временные файлы. **Это не испытание HGST**, не чтение `\\.\PhysicalDrive2`, не запись на `T:` и не доказательство ускорения HDD. Если SDK ещё не предоставил `Windows.h` и `kernel32.lib`, тест сборки пропускается. Все результаты лабораторных экспериментов из `results/` сохраняются.
