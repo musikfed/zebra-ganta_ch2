@@ -1,9 +1,9 @@
 param([switch]$BuildTest)
-# PEGINELAB Windows SDK Doctor v6: read-only. Windows PowerShell 5.1+.
+# PEGINELAB Windows SDK Doctor v7: read-only. Windows PowerShell 5.1+.
 # No downloads, registry edits, PATH modifications or installation.
 # Optional -BuildTest creates a tiny C source/EXE in TEMP and removes it afterward.
 $ErrorActionPreference = 'Continue'
-Write-Host '=== PEGINELAB Windows SDK Doctor v6 ===' -ForegroundColor Cyan
+Write-Host '=== PEGINELAB Windows SDK Doctor v7 ===' -ForegroundColor Cyan
 Write-Host ('Windows: ' + [Environment]::OSVersion.VersionString)
 Write-Host ('PowerShell: ' + $PSVersionTable.PSVersion)
 Write-Host ('Architecture x64 OS: ' + [Environment]::Is64BitOperatingSystem)
@@ -152,15 +152,22 @@ int main(void) {
   return 0;
 }
 '@ | Set-Content -LiteralPath $sourcePath -Encoding Ascii
+    $vcvars=Join-Path $vsPath 'VC\Auxiliary\Build\vcvars64.bat'
+    $setupScript=if(Test-Path -LiteralPath $vcvars){$vcvars}else{$devcmd}
+    Report INFO 'Build environment batch' $setupScript
+    $setupArgs=if($setupScript -eq $devcmd){' -arch=amd64 -host_arch=amd64'}else{''}
+    # Format each line as ONE string: PowerShell array parsing with '+' previously
+    # fragmented the quoted VS path into separate batch commands.
     $cmdLines=@(
-      '@echo off',
-      'call "'+$devcmd+'" -arch=amd64 -host_arch=amd64 >nul',
-      'if errorlevel 1 exit /b 11',
-      'cd /d "'+$work+'"',
-      'cl.exe /nologo /W3 /TC "'+$sourcePath+'" /link /OUT:"'+$exePath+'"',
+      '@echo off'
+      ('call "{0}"{1}' -f $setupScript,$setupArgs)
+      'if errorlevel 1 exit /b 11'
+      ('cd /d "{0}"' -f $work)
+      ('cl.exe /nologo /W3 /TC "{0}" /link /OUT:"{1}"' -f $sourcePath,$exePath)
       'exit /b %errorlevel%'
     )
     $cmdLines | Set-Content -LiteralPath $cmdPath -Encoding Ascii
+    Report INFO 'Generated batch command count' $cmdLines.Count
     # Avoid cmd.exe nested quoting entirely: launch build.cmd from its own
     # temporary working directory. Quoted paths inside build.cmd are safe.
     Push-Location -LiteralPath $work
