@@ -143,3 +143,30 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\usb-bridge-inspe
 ## Следующий опыт: сравнение двух USB–SATA подключений
 
 После USBView подтвержден режим **High-Speed (USB 2.0)** у моста **JMicron VID:PID 152D:2338**. Автор располагает отдельной док-станцией USB 3.0 → SATA. Подготовлен [протокол опыта 004 — USB 2.0 против USB 3.0](docs/experiments/004-usb2-vs-usb3-hgst-protocol.md), но измерения через новую док-станцию ещё не выполнены. Перед повторением тестов обязательно перепроверить Disk N, модель, ёмкость, букву тома и фактический Device Bus Speed в USBView; старые команды со значением `--disk 2` не запускать вслепую. Сохранить CSV и отчёты на F:, не записывать на испытываемый диск.
+
+
+## Эксперимент 004 — старый USB 2.0 против ORICO USB-C
+
+**Исходный стенд:** JMicron 152D:2338 действительно работал в USB High-Speed (по USBView). **Новый стенд:** ORICO 6139C3-EU-CR-BP, SATA, USB-C ↔ USB-C к Acer, независимое питание 12 В. До получения USBView новой док-станции её реальная согласованная скорость **неизвестна**.
+
+Созданы `experiment004.py` (защищённые, только читающие реальные замеры, режимы `usb2-jmicron` и `usb3-orico`) и `tools/compare_usb_bridges.py` (анализатор ранее записанных CSV, без доступа к диску). **Старые `lab.py` и `transitions.py` не изменены; они привязаны к исходному Disk 2.**
+
+После переподключения *сначала*:
+
+```powershell
+Set-Location F:\zebra-ganta_ch2
+git pull --ff-only origin main
+uv run python lab.py inspect
+Get-Disk | Format-Table Number,FriendlyName,BusType,Size,IsBoot,IsSystem
+& 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\usbview.exe'
+```
+
+Проверить новый Disk N, ту же модель HGST, `Get-Disk.Size`, `Win32_DiskDrive.Size`, букву тома и USBView VID/PID + **Device Bus Speed**. Только после этого запускать `experiment004.py` с явными `--disk`, `--letter`, `--size`, `--win32-size`, `--bridge usb3-orico`, `--link-speed` и `--vidpid`; параметры нельзя подставлять по старым данным. Скрипт сверит идентичность **дважды**, запросит подтверждение `READ HGST DISK N` и запишет результаты **только на F:**. Он не делает запись на HGST и не обходит отказ Windows.
+
+Для анализа двух **настоящих** CSV:
+
+```powershell
+uv run python tools/compare_usb_bridges.py --usb2-scan 'results\ПУТЬ_К_USB2\measurements.csv' --usb3-scan 'results\ПУТЬ_К_ORICO\measurements.csv'
+```
+
+Пути выше — заполнители, не готовые файлы. Старые серии 001–003 остаются в своём исходном формате. См. [подробный протокол 004](docs/experiments/004-usb2-vs-usb3-hgst-protocol.md).
