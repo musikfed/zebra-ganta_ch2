@@ -1,0 +1,4 @@
+run_id,utc_directory,seed,pairs,near_median_ms,far_median_ms,difference_of_medians_ms,source,notes
+1,20261112T185114Z-transitions,20261112,20,10.8974,17.0894,6.1920,user_console_transcript,read_only_4KiB
+2,20261112T185549Z-transitions,20261112,20,10.9594,17.1212,6.1618,user_console_transcript,read_only_4KiB
+3,20261112T185935Z-transitions,20261113,40,10.9342,19.0528,8.1186,user_console_transcript,read_only_4KiB
