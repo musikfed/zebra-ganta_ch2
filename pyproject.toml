@@ -1,0 +1,9 @@
+[project]
+name = "zebra-ganta-ch2"
+version = "0.1.0"
+description = "PEGINELAB read-only HGST HDD experiments for Гантова зебра, часть 2"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
