@@ -1,0 +1,26 @@
+{
+  "dataset": "20261113T120828Z-exp008-ntfs-hgst",
+  "experiment": "008",
+  "provenance": "original CSV bytes copied from Acer F: after real read-only HGST lab run",
+  "source_drive_volume": "physical HGST Disk 2, T: NTFS, read only",
+  "source_original_manifest_sha256": "2177c6fee5e0efef4f5e4cf91e389fe494dd14cf540d2cd2c06571bc81fb5c67",
+  "files": {
+    "observations.csv": {
+      "sha256": "ef40b823928f80c0d48597efdafa23229ac4ac72eece007ea1b5df619302a13a",
+      "rows": 512,
+      "bytes": 26499
+    },
+    "summary.csv": {
+      "sha256": "85cf48c40cc522152162da67d83ddd8f7e91196593897a8dcf91fee70e18d81c",
+      "rows": 4,
+      "bytes": 252
+    }
+  },
+  "limitations": "Windows/USB timing is not pure physical seek; no Zebra layout speedup proved",
+  "time_utc": "2026-11-13T12:08:28.034779+00:00",
+  "seed": 20261113,
+  "count_per_trace": 128,
+  "traces": 4,
+  "block_bytes": 4096,
+  "format": "NTFS on existing T:"
+}

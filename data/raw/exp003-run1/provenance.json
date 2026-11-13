@@ -1,0 +1,20 @@
+{
+  "dataset": "20261112T185114Z-transitions",
+  "experiment": "003",
+  "provenance": "original CSV bytes copied from Acer F: after real read-only HGST lab run",
+  "source_drive_volume": "physical HGST Disk 2, T: NTFS, read only",
+  "source_original_manifest_sha256": "64fd615ef0e48a7a67addbe4172e3ee036e05cbdcf37d4a8a6d4c18dbaba7755",
+  "files": {
+    "observations.csv": {
+      "sha256": "b6a73142408096dbfeeb3382156fd712d462520a859afd1fd6151f0bae7fcd71",
+      "rows": 40,
+      "bytes": 2656
+    }
+  },
+  "limitations": "Windows/USB timing is not pure physical seek; no Zebra layout speedup proved",
+  "date_utc": "2026-11-12T18:51:15.574680+00:00",
+  "pairs": 20,
+  "seed": 20261112,
+  "sample_block_bytes": 4096,
+  "near_gap_bytes": 2097152
+}
