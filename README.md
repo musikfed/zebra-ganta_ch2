@@ -266,3 +266,16 @@ uv run python -m unittest discover -s tests -v
 Во всех трёх случаях одинаковый полезный объём **1 ГиБ**, но разное количество логических запросов и порядок объектов; результаты **не являются бенчмарком и не доказывают** ускорение на HGST. Для реального копирования и размещения «Зебры» понадобится отдельный протокол с безопасным тестовым носителем и явно согласованными операциями записи; на текущем образце HGST T: этот этап не запускается автоматически.
 
 **English summary:** Chapter 8 studies one large file versus 4,096 small files, sequential/concurrent workloads, logical filesystem extents versus inaccessible magnetic boundaries, head servo and lifespan trade-offs. No benchmark results for tests 006–008 exist yet. The supplied planner generates synthetic request traces only and never writes to the HDD.
+
+### Проверка 006 на Acer: 22/22 теста и следующий инструмент 007
+
+13.11.2026 автор подтвердил три 1-ГиБ логические трассы (`single`, `small-sequential`, `small-interleaved`) и **22 теста OK**. Никакого чтения/записи гигабайта и доказанного ускорения HDD нет. См. [протокол RU](docs/experiments/006-008-workloads-extents-mechanics.ru.md) / [EN](docs/experiments/006-008-workloads-extents-mechanics.en.md).
+
+Добавлена [`tools/inspect_extents007.py`](tools/inspect_extents007.py) — **PLAN ONLY по умолчанию**. Для файла, явно выбранного на HGST T:, проверяет модель, USB/PnP и NTFS перед необязательным запуском `fsutil file queryextents`. Вывод — **логические NTFS экстенты, не магнитные границы**. Код ещё не испытан на Windows, поэтому сначала выполнить Python-тесты и безопасный план, без `--run`:
+
+```powershell
+uv run python -m unittest discover -s tests -v
+uv run python tools/inspect_extents007.py --file "T:\TestData\sample.bin"
+```
+
+Имя `T:\TestData\sample.bin` — пример, не существующий автоматически файл. Не создавать его на T: ради проверки. Не публиковать личные пути и имена файлов.
