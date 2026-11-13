@@ -96,3 +96,10 @@ uv run python tools/inspect_extents007.py --volume --run
 ```
 
 These newer changes **have not yet been validated on the user's Acer**. Volume metadata is not file extent mapping, HDD head position telemetry, or proof of improved Zebra speed. **T: remains write-protected by project policy** until explicitly approved.
+
+
+## Confirmed 007 HGST T: on Acer — 13 November 2026
+
+The author verified `37 tests in 0.098s — OK` after pulling `3d73132`. The T:-only inspector correctly returned **PLAN ONLY** without `--run`; explicit `--volume --run` returned **READ-ONLY VERIFIED HGST Disk 2 / T: / NTFS** and read only volume metadata. The recorded NTFS volume size is **500,087,910,400 bytes**, free **499,971,846,144**, Healthy, NTFS **3.1**, LFS **1.1**, logical sector **512 bytes**, physical sector **4,096 bytes**, cluster **4,096 bytes**, total **122,091,775** clusters and free **122,064,463**.
+
+This is a validated volume identification/metadata exercise, **not a file allocation map, a physical magnetic track map, or an actuator seek-time measurement**. No ordinary user file was found on T: in the earlier directory enumeration. Do not fabricate a file or write a test corpus without a separately authorized protocol. Next design should target strictly **read-only raw-LBA observations** with order balancing and explicit cold-versus-repeated read controls; exp005 already demonstrated severe caching confounding. Distinguish logical sector units from physical alignment; never claim a Zebra speedup from metadata.
