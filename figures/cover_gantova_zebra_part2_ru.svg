@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2400" viewBox="0 0 1600 2400" role="img" aria-labelledby="title desc">
+<title id="title">Гантова зебра. Часть вторая. Цена перемещения — обложка</title>
+<desc id="desc">Авторская инженерная обложка: поверхность магнитной пластины с концентрическими дорожками, линиями магнитных областей, рычагом головки и логической ступенчатой трассой LBA. Схема художественная, не физический снимок реальной геометрии HDD.</desc>
+<defs>
+  <linearGradient id="bg" x2=".95" y2="1"><stop stop-color="#091522"/><stop offset=".56" stop-color="#142c42"/><stop offset="1" stop-color="#060e19"/></linearGradient>
+  <radialGradient id="platter" cx=".41" cy=".36" r=".8"><stop stop-color="#738da0"/><stop offset=".36" stop-color="#314b61"/><stop offset=".73" stop-color="#0d263a"/><stop offset="1" stop-color="#5b788b"/></radialGradient>
+  <linearGradient id="arm" x1="0" y1="0" x2="1" y2=".6"><stop stop-color="#deebee"/><stop offset=".5" stop-color="#8398a9"/><stop offset="1" stop-color="#364a5a"/></linearGradient>
+  <pattern id="lines" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M0 0V28M0 0H28" stroke="#c4edfa" stroke-opacity=".042" stroke-width="1"/></pattern>
+  <filter id="glow"><feGaussianBlur stdDeviation="18"/></filter>
+  <clipPath id="crop"><rect width="1600" height="2400"/></clipPath>
+</defs>
+<rect width="1600" height="2400" fill="url(#bg)"/>
+<rect width="1600" height="2400" fill="url(#lines)"/>
+<g clip-path="url(#crop)">
+<path d="M0 705L1600 1190M0 760L1600 1245M0 815L1600 1300" stroke="#7dc8dc" stroke-width="2" opacity=".1"/>
+<circle cx="665" cy="1365" r="680" fill="#3a8fb5" opacity=".16" filter="url(#glow)"/>
+<circle cx="665" cy="1365" r="624" fill="url(#platter)" stroke="#a3c6d7" stroke-width="12" stroke-opacity=".78"/>
+<circle cx="665" cy="1365" r="582" fill="none" stroke="#e6eff3" stroke-opacity=".4" stroke-width="2"/>
+<g fill="none" stroke="#95b5c4" stroke-width="3" opacity=".5">
+<circle cx="665" cy="1365" r="540"/><circle cx="665" cy="1365" r="510"/><circle cx="665" cy="1365" r="480"/><circle cx="665" cy="1365" r="450"/><circle cx="665" cy="1365" r="420"/><circle cx="665" cy="1365" r="390"/><circle cx="665" cy="1365" r="360"/><circle cx="665" cy="1365" r="330"/><circle cx="665" cy="1365" r="300"/><circle cx="665" cy="1365" r="270"/><circle cx="665" cy="1365" r="240"/><circle cx="665" cy="1365" r="210"/><circle cx="665" cy="1365" r="180"/><circle cx="665" cy="1365" r="150"/>
+</g>
+<g fill="none" stroke="#f6b85f" stroke-width="20" opacity=".84" stroke-dasharray="52 38">
+<circle cx="665" cy="1365" r="523"/><circle cx="665" cy="1365" r="402"/><circle cx="665" cy="1365" r="281"/>
+</g>
+<g fill="none" stroke="#74dbe7" stroke-width="9" stroke-dasharray="70 38" opacity=".9">
+<circle cx="665" cy="1365" r="468"/><circle cx="665" cy="1365" r="342"/>
+</g>
+<circle cx="665" cy="1365" r="115" fill="#1a3246" stroke="#bed2db" stroke-width="16"/>
+<circle cx="665" cy="1365" r="65" fill="#c1d5dd" opacity=".9"/>
+<circle cx="665" cy="1365" r="24" fill="#314b5c"/>
+<g transform="rotate(-19 1335 1130)">
+  <path d="M1275 980Q1330 945 1395 980L1410 1040L1000 1390L950 1410L887 1382L924 1323L1257 1007Z" fill="url(#arm)" stroke="#d9e3e9" stroke-width="8"/>
+  <path d="M950 1360L810 1434L795 1475L869 1505L970 1410Z" fill="#d7e5e8" stroke="#637d91" stroke-width="8"/>
+  <rect x="782" y="1456" width="95" height="24" rx="10" fill="#1c3a4e"/>
+  <circle cx="1335" cy="1030" r="105" fill="#637b8e" stroke="#d5e5e9" stroke-width="13"/>
+  <circle cx="1335" cy="1030" r="45" fill="#1c3446" stroke="#e5f2f4" stroke-width="8"/>
+</g>
+<g opacity=".9"><path d="M137 1875H1480" stroke="#85dbe8" stroke-width="3" stroke-opacity=".5"/><path d="M145 1805H264V1760H386V1818H514V1748H636V1796H755V1700H878V1757H995V1700H1118V1726H1255V1662H1460" stroke="#b8ecf2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="145" cy="1805" r="11" fill="#f6bf67"/><circle cx="1460" cy="1662" r="11" fill="#f6bf67"/></g>
+</g>
+<rect x="110" y="98" width="13" height="95" fill="#efb962"/>
+<g font-family="'DejaVu Sans', 'Liberation Sans', Arial, sans-serif">
+<text x="155" y="145" font-size="48" fill="#9ddcea" letter-spacing="8" font-weight="700">PEGINELAB</text>
+<text x="115" y="327" font-size="112" fill="#f0f5f6" font-weight="800" letter-spacing="-2">ГАНТОВА</text>
+<text x="115" y="451" font-size="122" fill="#f0f5f6" font-weight="800" letter-spacing="-1">ЗЕБРА</text>
+<text x="122" y="552" font-size="48" fill="#f5bd6a" font-weight="700" letter-spacing="9">ЧАСТЬ ВТОРАЯ</text>
+<rect x="115" y="610" width="1085" height="4" fill="#e7b65d"/>
+<text x="115" y="703" font-size="84" fill="#eef7fa" font-weight="700">ЦЕНА ПЕРЕМЕЩЕНИЯ</text>
+<text x="118" y="2055" font-size="41" fill="#e0edf1">Как жёсткий диск находит данные,</text>
+<text x="118" y="2114" font-size="41" fill="#e0edf1">почему тратит время и что показывают опыты</text>
+<path d="M110 2170H1490" stroke="#5f99ad" stroke-width="2"/>
+<text x="115" y="2255" font-size="32" fill="#9cbbc8" letter-spacing="3">МАГНИТНАЯ ЗАПИСЬ  ·  МЕХАНИКА  ·  LBA  ·  ЭКСПЕРИМЕНТЫ</text>
+<text x="115" y="2324" font-size="29" fill="#b3c4cc">Греп Пайп</text>
+</g>
+</svg>
