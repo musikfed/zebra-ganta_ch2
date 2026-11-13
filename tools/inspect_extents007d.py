@@ -16,6 +16,8 @@ from pathlib import Path, PureWindowsPath
 import subprocess
 import sys
 
+from parse_extents007 import parse_extents
+
 EXPECTED_DISK = 0
 EXPECTED_MODEL = "AMD R5SL120G"
 EXPECTED_SERIAL = "12012221W1021"
@@ -97,8 +99,10 @@ def inspect(raw: str) -> int:
                       capture_output=True,timeout=30,check=False)
     if cp.returncode:
         raise RuntimeError("fsutil queryextents refused/unsupported (no permission bypass)")
+    mapped = parse_extents(cp.stdout)
     print("NTFS logical VCN/LCN extents only — NOT magnetic tracks.")
-    print(cp.stdout.decode("utf-8-sig","replace"))
+    print(json.dumps(mapped, ensure_ascii=False, indent=2))
+    print("NOTE: LCN=null indicates unallocated/sparse run; compression requires independent check.")
     print("No files created or changed by this tool; file path not stored.")
     return 0
 
