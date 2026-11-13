@@ -357,3 +357,18 @@ uv run python tools/inspect_extents007d.py --file "D:\msdia80.dll" --run
 ```
 
 Эти операции читают метаданные, не изменяя файл. Ожидается 34 unit-теста; **новую версию пока не проверяли на Acer**. Подробности: [RU](docs/experiments/006-008-workloads-extents-mechanics.ru.md) / [EN](docs/experiments/006-008-workloads-extents-mechanics.en.md); [книга, глава 8](docs/book/chapter-8-data-islands-mechanics-ru.md).
+
+### Возвращаем исследования на HGST T:, а не SSD D:
+
+Автор подтвердил: D: — только контроль NTFS-сжатия (`msdia80.dll`: 904704 → 585728 байт, 4096 байт/кластер). Для целевого HDD **HGST T: / Disk 2** проверены NTFS 3.1, 4096 байт/кластер и 4096 физических байт/сектор. Доступных обычных файлов на T: пока нет.
+
+Исправлен `ModuleNotFoundError: parse_extents007` при запуске unittest; файловый T:-инспектор [`inspect_extents007.py`](tools/inspect_extents007.py) дополнен режимом **`--volume`**: без файла и без записи, на первом шаге `PLAN ONLY`, при `--run` проверяет аппаратную идентичность HGST/VIA и запрашивает только NTFS-метаданные тома. Тесты на Acer ещё предстоят.
+
+```powershell
+git pull --ff-only origin main
+uv run python -m unittest discover -s tests -v
+uv run python tools/inspect_extents007.py --volume
+uv run python tools/inspect_extents007.py --volume --run
+```
+
+Никаких новых файлов на T:, дефрагментации, форматирования, копирования или управляемого перемещения головки. NTFS-метаданные тома не показывают магнитную геометрию.
