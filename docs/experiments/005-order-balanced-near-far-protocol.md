@@ -52,7 +52,7 @@ uv run python -m unittest discover -s tests -v
 Только после проверки версии кода и реального подключения ORICO возможен **отдельный live-прогон** (одной строкой):
 
 ```powershell
-uv run python experiment005.py --run --disk 2 --letter T --size 500106780160 --win32-size 500105249280 --bridge usb3-orico --link-speed Super --vidpid 2109:0715 --pairs 20 --seed 20261115
+uv run python experiment005.py --run --disk 2 --letter T --size 500106780160 --win32-size 500105249280 --bridge usb3-orico --link-speed Super --vidpid 2109:0715 --pairs 20 --seed 20261112
 ```
 
 Программа запросит фразу `READ HGST DISK 2 EXP005`. Обязательно перепроверить `Disk 2` и `T:` после любого переподключения. Без сохранения пользовательской команды с неверным номером диска.
