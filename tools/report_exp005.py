@@ -58,13 +58,32 @@ def analyze(path: Path):
             far=next(data[pair,rnd,s]["latency"] for s in (1,2) if data[pair,rnd,s]["mode"]=="far")
             diffs.append(far-near)
         pairs.append(median(diffs))
+    # Distinguish first exposure from repeated reads at the SAME LBA locations.
+    # Do not assume sub-millisecond values are physical head movements.
+    by_round = {}
+    for rnd in range(1,5):
+        samples = [r for (p,rr,s),r in data.items() if rr == rnd]
+        by_round[str(rnd)] = {
+            "count":len(samples),
+            "near_median_ms":median([r["latency"] for r in samples if r["mode"]=="near"]),
+            "far_median_ms":median([r["latency"] for r in samples if r["mode"]=="far"]),
+            "anchor_median_ms":median([r["anchor_latency"] for r in samples]),
+            "target_below_1ms_count":sum(r["latency"] < 1 for r in samples)
+        }
+    first = [r for (p,rr,s),r in data.items() if rr == 1]
+    later = [r for (p,rr,s),r in data.items() if rr > 1]
+    summary["rounds"] = by_round
+    summary["first_round_target_median_ms"] = median([r["latency"] for r in first])
+    summary["later_rounds_target_median_ms"] = median([r["latency"] for r in later])
+    summary["all_targets_below_1ms_count"] = sum(r["latency"] < 1 for r in data.values())
+    summary["all_anchors_below_1ms_count"] = sum(r["anchor_latency"] < 1 for r in data.values())
     summary["paired_delta_median_ms"]=median(pairs)
     summary["positive_pair_count"]=sum(x>0 for x in pairs)
     summary["negative_pair_count"]=sum(x<0 for x in pairs)
     return {"experiment":"005","source":str(folder),"pairs":manifest["pairs"],
             "target_reads":len(rows),"read_only_analysis":True,
             "metrics":summary,
-            "warning":"Order-balanced, but cache/warmup/radial-position effects remain. Not pure head seek."}
+            "warning":"Same LBA blocks repeat 4 rounds; sub-millisecond times suggest cache or short-circuiting, not physical seek. ABBA alone does not isolate disk mechanics."}
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
