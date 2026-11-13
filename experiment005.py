@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Experiment 005: counterbalanced read-only near/far HDD latency.
+r"""Experiment 005: counterbalanced read-only near/far HDD latency.
 
 By default this prints a deterministic plan and DOES NOT open a physical drive.
 Live operation requires --run, full disk identity confirmation, and explicit phrase.
