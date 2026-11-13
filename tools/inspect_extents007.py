@@ -10,6 +10,7 @@ The API reports NTFS logical extents, NOT physical magnetic tracks.
 """
 from __future__ import annotations
 import argparse
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -22,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from experiment004 import verify
 from experiment005 import check_usb_parent
 from lab import DEFAULT_SIZE, powershell_json
+from tools.parse_extents007 import parse_extents
 
 SAFE_TARGET = dict(disk=2,letter="T",size=DEFAULT_SIZE,
                    win32_size=500105249280,bridge="usb3-orico",
@@ -71,23 +73,77 @@ def run(file_path: Path) -> int:
     cmd=["fsutil.exe","file","queryextents",str(actual)]
     result=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
                           timeout=30,check=False)
-    out=result.stdout.decode("utf-8-sig","replace")
     err=result.stderr.decode("utf-8-sig","replace")
     if result.returncode!=0:
         raise RuntimeError("fsutil queryextents unsupported/denied (no bypass): "+err[:400])
-    print("===== NTFS LOGICAL EXTENTS (raw fsutil output) =====")
-    print(out)
+    mapped=parse_extents(result.stdout)
+    print("===== NTFS LOGICAL EXTENTS (structured JSON) =====")
+    print(json.dumps(mapped,ensure_ascii=False,indent=2))
     print("Interpretation: file allocation only. True magnetic boundaries UNKNOWN.")
     return 0
 
 
+
+def run_volume() -> int:
+    """Identify the exact HGST T: and display OS-reported filesystem metadata.
+
+    No file needed, no raw sector reads and no writes. fsutil fsinfo ntfsinfo
+    obtains filesystem structure, not the physical allocation of a user file.
+    """
+    if os.name != "nt":
+        raise RuntimeError("Volume inventory requires native Windows")
+    if Path(__file__).resolve().parent.parent.drive.upper() != "F:":
+        raise RuntimeError("Repository must be on F:")
+    args=SimpleNamespace(**SAFE_TARGET)
+    before=verify(args)
+    ancestors=check_usb_parent(args)
+    info=powershell_json(
+        "$p=Get-Partition -DriveLetter T -ErrorAction Stop;"
+        "$v=Get-Volume -DriveLetter T -ErrorAction Stop;"
+        "if($p.DiskNumber -ne 2 -or $v.FileSystem -ne 'NTFS' -or "
+        "$v.HealthStatus -ne 'Healthy'){throw 'T volume mismatch'};"
+        "ConvertTo-Json -InputObject ([PSCustomObject]@{"
+        "DiskNumber=[int]$p.DiskNumber;"
+        "DriveLetter=[string]$p.DriveLetter;"
+        "FileSystem=[string]$v.FileSystem;"
+        "HealthStatus=[string]$v.HealthStatus;"
+        "SizeBytes=[int64]$v.Size;"
+        "FreeBytes=[int64]$v.SizeRemaining}) -Compress"
+    )
+    if not isinstance(info,dict) or info.get("DiskNumber") != 2 or (
+            info.get("DriveLetter","").upper()!="T" or info.get("FileSystem")!="NTFS"
+            or info.get("HealthStatus")!="Healthy"):
+        raise RuntimeError("HGST T: volume verification failed")
+    if verify(args)!=before or check_usb_parent(args)!=ancestors:
+        raise RuntimeError("HGST identity changed during inspection")
+    print("READ-ONLY VERIFIED HGST Disk 2 / T: / NTFS — filesystem metadata only")
+    print(json.dumps(info,ensure_ascii=False,indent=2))
+    # This exact subcommand queries filesystem metadata. It does not create
+    # files or expose physical magnetic sector / actuator locations.
+    cp=subprocess.run(["fsutil.exe","fsinfo","ntfsinfo","T:"],
+                      capture_output=True,timeout=30,check=False)
+    if cp.returncode:
+        raise RuntimeError("fsutil fsinfo ntfsinfo failed; no fallback performed")
+    print("===== NTFS VOLUME METADATA (console code page may vary) =====")
+    print(cp.stdout.decode("oem","replace") if os.name=="nt" else cp.stdout.decode("utf-8","replace"))
+    print("This cannot map the extents of nonexistent user files.")
+    return 0
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--file",required=True,help="Existing single ordinary file on HGST T:")
+    p.add_argument("--file",help="Existing single ordinary file on HGST T:")
+    p.add_argument("--volume",action="store_true",help="Inspect verified T: NTFS volume metadata, without requiring a file")
     p.add_argument("--run",action="store_true",
                    help="Run metadata-only FSUTIL query, after hardware verification")
     a=p.parse_args()
     try:
+        if a.volume == bool(a.file):
+            raise ValueError("Provide exactly one of --volume or --file")
+        if a.volume:
+            if not a.run:
+                print("PLAN ONLY: T: HGST Disk 2 / VIA USB / NTFS volume metadata; zero device I/O")
+                return 0
+            return run_volume()
         selected=validate_selected(a.file)
         if not a.run:
             print("PLAN ONLY: will verify HGST Disk 2, T:, USB VID/PID and NTFS; "
