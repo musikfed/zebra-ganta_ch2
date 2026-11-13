@@ -45,7 +45,7 @@ class PublishExperiment010Tests(unittest.TestCase):
     def test_reject_corrupted_summary(self):
         a,b,c=self.original()
         with self.assertRaises(ValueError):
-            validate(a,b.replace(b"10.0",b"99.0"),c)
+            validate(a,b.replace(b"4.0",b"99.0",1),c)
 
     def test_reject_unexpected_column(self):
         a,b,c=self.original()
