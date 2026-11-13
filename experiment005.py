@@ -25,7 +25,7 @@ DEFAULT_PAIRS = 20
 ROUNDS = (("near", "far"), ("far", "near"), ("far", "near"), ("near", "far"))
 
 
-def schedule(pairs: int = DEFAULT_PAIRS, seed: int = 20261115):
+def schedule(pairs: int = DEFAULT_PAIRS, seed: int = 20261112):
     """ABBA per address pair: both near/far orders for the SAME addresses."""
     if pairs not in (20, 40):
         raise ValueError("Only 20 or 40 address pairs are allowed")
@@ -164,7 +164,7 @@ def main():
     p.add_argument("--link-speed",default="Super")
     p.add_argument("--vidpid",default="2109:0715")
     p.add_argument("--pairs",type=int,default=20)
-    p.add_argument("--seed",type=int,default=20261115)
+    p.add_argument("--seed",type=int,default=20261112)
     a = p.parse_args()
     try:
         validate_args(a)
