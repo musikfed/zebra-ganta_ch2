@@ -244,3 +244,25 @@ uv run python tools/report_exp005.py "results\\20261113T070035Z-exp005-orico"
 Автор запушил коммит `285c452` с [первичными `manifest.json` и `observations.csv`](data/raw/exp005-usb3-orico/). Проверены все 160 целевых чтений: раунд 1 — near **5,74635 мс**, far **25,58940 мс**; раунды 2–4 — все 120 целевых чтений быстрее 1 мс. Результаты отражают **вероятное кэширование повторно читаемых LBA**, а не ускорение головки или алгоритма размещения.
 
 Готовы графики с русскими подписями: [рис. 3.4 — сравнение первого и повторных раундов](figures/fig_3_4_exp005_first_vs_repeated_ru.svg) и [рис. 3.5 — двадцать пар первого раунда](figures/fig_3_5_exp005_first_round_20pairs_ru.svg). [Подробная методологическая интерпретация](docs/experiments/005-order-balanced-near-far-protocol.md). Следующий опыт 006 — только после разработки отдельного протокола с независимыми адресами.
+
+
+## Глава 8 — большие файлы, «островки» и механика HDD (RU / EN)
+
+По авторской программе исследования добавлена [русская глава 8](docs/book/chapter-8-data-islands-mechanics-ru.md) о копировании 1 ГиБ одним файлом и набором из 4096 малых файлов, конкурентном чтении, границах файловых экстентов, перемещении головки, сервоторможении, вращении шпинделя и влиянии алгоритма размещения на ресурс. Это **исследовательские вопросы, а не уже полученное ускорение**.
+
+Технические протоколы: [Русский / RU](docs/experiments/006-008-workloads-extents-mechanics.ru.md) · [English / EN](docs/experiments/006-008-workloads-extents-mechanics.en.md). Схема границ островков: [русский SVG](figures/fig_8_1_data_islands_layers_ru.svg) / [English SVG](figures/fig_8_1_data_islands_layers_en.svg). Текст книги остаётся на русском.
+
+### Эксперимент 006: только план 1 ГиБ, без физического HDD
+
+Новый скрипт `tools/plan_workloads006.py` составляет логический план в памяти и печатает его паспорт: **не открывает устройство, не создаёт гигабайт данных, не записывает на T:**. Названия потоков задают метки будущей нагрузки; программа **не измеряет реальную параллельность**.
+
+```powershell
+uv run python tools/plan_workloads006.py --scenario single --streams 1
+uv run python tools/plan_workloads006.py --scenario small-sequential --streams 1
+uv run python tools/plan_workloads006.py --scenario small-interleaved --streams 4
+uv run python -m unittest discover -s tests -v
+```
+
+Во всех трёх случаях одинаковый полезный объём **1 ГиБ**, но разное количество логических запросов и порядок объектов; результаты **не являются бенчмарком и не доказывают** ускорение на HGST. Для реального копирования и размещения «Зебры» понадобится отдельный протокол с безопасным тестовым носителем и явно согласованными операциями записи; на текущем образце HGST T: этот этап не запускается автоматически.
+
+**English summary:** Chapter 8 studies one large file versus 4,096 small files, sequential/concurrent workloads, logical filesystem extents versus inaccessible magnetic boundaries, head servo and lifespan trade-offs. No benchmark results for tests 006–008 exist yet. The supplied planner generates synthetic request traces only and never writes to the HDD.
