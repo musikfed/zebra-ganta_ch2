@@ -8,6 +8,9 @@ from pathlib import Path
 import statistics
 import sys
 
+# Allow root-level experiment005 import when running tools/report_exp005.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 def median(values):
     return round(statistics.median(values),5) if values else None
 
