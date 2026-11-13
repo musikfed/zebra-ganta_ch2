@@ -103,8 +103,23 @@ def discover():
         names=("observations.csv","summary.csv") if expected_summary else ("observations.csv",)
         payloads={}
         info={}
+        expected_columns={
+            "003": {
+                "observations.csv":{"pair","mode","anchor_offset","target_offset","distance_bytes","anchor_ms","target_read_ms","bytes"}
+            },
+            "008": {
+                "observations.csv":{"trace","mode","sequence","offset_bytes","jump_bytes","read_bytes","target_read_ms"},
+                "summary.csv":{"trace","mode","reads","total_wall_ms","median_read_ms","jump_sum_bytes"}
+            },
+            "009": {
+                "observations.csv":{"zone_percent","group","slot","offset_bytes","read_bytes","size_kib","read_ms","MB_s"},
+                "summary.csv":{"zone_percent","size_kib","samples","median_read_ms","median_MB_s"}
+            }
+        }
         for name in names:
             blob,rows,fields=read_source(src,name)
+            if fields != expected_columns[exp][name]:
+                raise ValueError(f"{folder_name}/{name}: unexpected columns, refusing to publish possibly private data")
             target_count=expected_obs if name=="observations.csv" else expected_summary
             if len(rows)!=target_count:
                 raise ValueError(f"{folder_name}/{name}: expected {target_count} rows, got {len(rows)}")
