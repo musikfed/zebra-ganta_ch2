@@ -1,0 +1,28 @@
+{
+  "schema": "zebra-ganta.exp010-public-archive.v1",
+  "experiment": "010",
+  "dataset": "20261113T130425Z-exp010-startup-ntfs",
+  "origin": "original Acer F: CSV, HGST Disk 2, T: NTFS, read-only",
+  "original_manifest_sha256": "15a797447af058a139705266285d49e34b3747714ed9f1ea96cffd4a7f9ad8d3",
+  "seed": 20261113,
+  "sessions": 9,
+  "pauses_s": [
+    0,
+    2,
+    10
+  ],
+  "reads_per_session": 2,
+  "files": {
+    "observations.csv": {
+      "rows": 9,
+      "sha256": "d1a2839821a85bce0e66b5b3102bc3b06ac3a21aa9bce135809481e7eaa9e51f",
+      "bytes": 627
+    },
+    "summary.csv": {
+      "rows": 3,
+      "sha256": "8907f5ee573dd70a3e1f2b383f1382e1eebc0535ae17cb6da61cb3b0acd087aa",
+      "bytes": 161
+    }
+  },
+  "limitations": "Windows/USB/HDD latency combined; no spindle-state control or Zebra placement proof"
+}
