@@ -125,7 +125,7 @@ def run_volume() -> int:
     if cp.returncode:
         raise RuntimeError("fsutil fsinfo ntfsinfo failed; no fallback performed")
     print("===== NTFS VOLUME METADATA (console code page may vary) =====")
-    print(cp.stdout.decode("oem","replace") if os.name=="nt" else cp.stdout.decode("utf-8","replace"))
+    print(cp.stdout.decode("cp866","replace"))
     print("This cannot map the extents of nonexistent user files.")
     return 0
 
