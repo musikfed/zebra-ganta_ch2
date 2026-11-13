@@ -13,7 +13,10 @@ from pathlib import Path
 from statistics import median
 import sys
 
-from tools.report_exp008 import analyze
+try:
+    from tools.report_exp008 import analyze
+except ModuleNotFoundError:
+    from report_exp008 import analyze
 
 DISK_SIZE=500106780160
 
