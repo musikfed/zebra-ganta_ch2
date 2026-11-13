@@ -55,3 +55,7 @@ uv run python tools/inspect_extents007d.py --file "D:\tools\sample.bin"
 ```
 
 Example paths need not exist in PLAN ONLY mode. Do not append `--run` until a specific existing non-sensitive file and the tests have been reviewed.
+
+## Acer validation: 30 passing tests, D: inspector still dry-run only (13 Nov 2026)
+
+The author successfully pulled commit `f291a58`; all **30 Python unit tests passed (0.089 s)**. A call to `inspect_extents007d.py` without `--run` returned **PLAN ONLY — zero file/device access**. This proves the dry-run behavior and unit-test results, not that real NTFS allocation extents were read. A small existing root-level `D:\msdia80.dll` file (904704 bytes in the author's inventory) is proposed for a first guarded metadata-only trial. Running `--run` still requires a live exact-device identity check and does not measure HDD head movement.
