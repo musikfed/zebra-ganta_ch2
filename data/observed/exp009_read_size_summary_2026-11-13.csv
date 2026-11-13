@@ -1,0 +1,16 @@
+zone_percent,size_kib,samples,median_read_ms,median_MB_s,min_read_ms,max_read_ms,provenance
+5,4,12,6.0404,0.6782,2.6166,9.8462,analyzer_stdout_original_CSV_on_Acer
+5,64,12,5.9807,10.9579,4.8377,10.1219,analyzer_stdout_original_CSV_on_Acer
+5,1024,12,12.13395,86.5024,11.2063,364.8702,analyzer_stdout_original_CSV_on_Acer
+27.5,4,12,6.39745,0.6403,4.7019,10.3229,analyzer_stdout_original_CSV_on_Acer
+27.5,64,12,7.28195,9.0036,2.5458,10.0535,analyzer_stdout_original_CSV_on_Acer
+27.5,1024,12,13.38735,78.408,11.579,14.769,analyzer_stdout_original_CSV_on_Acer
+50,4,12,7.8747,0.5202,3.9308,9.8508,analyzer_stdout_original_CSV_on_Acer
+50,64,12,9.00625,7.2768,4.3278,17.5334,analyzer_stdout_original_CSV_on_Acer
+50,1024,12,16.1692,64.8539,13.519,19.2513,analyzer_stdout_original_CSV_on_Acer
+72.5,4,12,8.3466,0.4921,1.5258,9.5246,analyzer_stdout_original_CSV_on_Acer
+72.5,64,12,8.70595,7.5505,1.9883,10.2929,analyzer_stdout_original_CSV_on_Acer
+72.5,1024,12,12.66925,82.7654,10.9052,25.8454,analyzer_stdout_original_CSV_on_Acer
+95,4,12,5.5011,0.7456,2.2834,8.7682,analyzer_stdout_original_CSV_on_Acer
+95,64,12,6.5706,9.9757,4.3621,15.4694,analyzer_stdout_original_CSV_on_Acer
+95,1024,12,19.92325,52.7077,16.234,22.5032,analyzer_stdout_original_CSV_on_Acer
