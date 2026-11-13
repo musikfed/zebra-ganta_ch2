@@ -64,7 +64,7 @@ uv run python lab.py scan --disk 2 --expect-model HTS725050B7E630 --expect-size 
 
 **Ограничения:** буферизация ОС/USB-моста не отключена; сырые наблюдаемые скорости **не являются чистой скоростью магнитной поверхности**. Для проверки повторяемости используйте различные порядки точек, учитывайте нагрев и отдельные контрольные серии с прямым SATA. Этот этап не измеряет достоверно время позиционирования головки и не устанавливает физическую карту дорожек.
 
-**Перед новым опытом:** [единый реестр 001–008 без дублирующих испытаний](docs/experiments/experiment-register-no-duplicates.ru.md). Фактически уже проведены 001–005; у 006 есть только синтетические планы; 007 — логическая инвентаризация метаданных; 008 — будущий опыт накопленной цены *длинных неповторяющихся* чтений, а не повтор 003 или 005.
+**Перед новым опытом:** [единый реестр 001–008 без дублирующих испытаний](docs/experiments/experiment-register-no-duplicates.ru.md). Фактически проведены **001–005 и 008**; у 006 есть только синтетические планы, 007 — логическая инвентаризация NTFS-метаданных. Опыт **008 завершён 13.11.2026** на HGST T: NTFS и **не повторяет** 003/005: 512 уникальных чтений (4 трассы × 128), см. [измеренные результаты](docs/experiments/008-unique-lba-trace-ntfs-hgst.ru.md).
 
 ## Лабораторная программа (по порядку реальных опытов)
 
@@ -100,7 +100,7 @@ uv run python analyze_transitions.py results\20261112T185114Z-transitions\observ
 
 По официальному HGST/Western Digital: SATA 6 Гбит/с, до **163 МБ/с** последовательной передачи **у внешнего диаметра (OD)**, 12 мс типовой средний поиск при чтении без командных накладных расходов, 7200 об/мин, 32 МБ буфер. В наших физических опытах через USB–SATA наблюдается в основном около 37–38 МБ/с. **Нельзя автоматически приписать различие USB**: фактическая скорость соединения моста не измерена; два исправных хост-контроллера AMD USB 3.10 этого не подтверждают. Дальше требуется проверка конкретного подключения через Microsoft USBView и, при возможности, контроль с другим адаптером/прямым SATA.
 
-## Текущий этап — №008 на HGST T: / NTFS + подготовка второй книги
+## Текущий этап — №008 проведён и проанализирован; оригиналы результатов сохраняются на Acer
 
 **Не повторять 001–005:** [реестр без дублей](docs/experiments/experiment-register-no-duplicates.ru.md). Добавлены [`experiment008.py`](experiment008.py) и [новый протокол 008](docs/experiments/008-unique-lba-trace-ntfs-hgst.ru.md). Это **не** EXT4 и не опыт записи файлов. `experiment008.py` по умолчанию только строит уникальные логические адреса без I/O.
 
@@ -113,7 +113,7 @@ uv run python -m unittest discover -s tests -v
 uv run python experiment008.py
 ```
 
-Только после успешных тестов, проверки подключения именно ORICO/VIA SuperSpeed, идентичности HGST Disk 2 и **тома T: NTFS**, можно отдельно выполнять ограниченный read-only запуск, указанный в [протоколе 008](docs/experiments/008-unique-lba-trace-ntfs-hgst.ru.md). **Физический запуск №008 пока не подтверждён.** Он не создаёт файлов и не перемещает NTFS-экстенты. Анализирует порядок запросов, а не реальные варианты размещения «Зебры».
+**УЖЕ ПРОВЕДЕНО:** физический read-only запуск №008 на HGST Disk 2 / T: NTFS и последующий анализ оригинальных CSV на Acer. Четыре трассы по 128 уникальных 4-КиБ LBA. Полное время: ordered **1332,0531** и **1023,2624 мс**; shuffled **1867,0913** и **1892,6870 мс**. Медианы полных времён **1177,6578** и **1879,8891 мс**, соответственно. Статистика сохранена в [CSV](data/observed/exp008_trace_summary_from_acer_2026-11-13.csv) и [протоколе](docs/experiments/008-unique-lba-trace-ntfs-hgst.ru.md). **Исходные 512 строк CSV всё ещё локально на Acer; не нужно повторять физический опыт.** Это эффект порядка запросов в конкретном стенде, **НЕ доказанное ускорение физического размещения файлов «Зеброй»**.
 
 Для второй книги подготовлен [стандарт LitRes A5, по первой части, без активных гиперссылок](docs/book/litres-part2-production.ru.md). Рукопись начата как отдельный рабочий DOCX; **к публикации ещё не утверждена**. 175 страниц — ориентир, не обоснование для добавления текста без доказательств.
 
@@ -284,7 +284,7 @@ uv run python -m unittest discover -s tests -v
 
 Во всех трёх случаях одинаковый полезный объём **1 ГиБ**, но разное количество логических запросов и порядок объектов; результаты **не являются бенчмарком и не доказывают** ускорение на HGST. Для реального копирования и размещения «Зебры» понадобится отдельный протокол с безопасным тестовым носителем и явно согласованными операциями записи; на текущем образце HGST T: этот этап не запускается автоматически.
 
-**English summary:** Chapter 8 studies one large file versus 4,096 small files, sequential/concurrent workloads, logical filesystem extents versus inaccessible magnetic boundaries, head servo and lifespan trade-offs. No benchmark results for tests 006–008 exist yet. The supplied planner generates synthetic request traces only and never writes to the HDD.
+**English summary:** Chapter 8 studies one large file versus 4,096 small files, sequential/concurrent workloads, logical filesystem extents versus inaccessible magnetic boundaries, head servo and lifespan trade-offs. Benchmark results for 008 are available; 006 remains synthetic-plans-only and 007 is NTFS metadata inspection. The supplied planner generates synthetic request traces only and never writes to the HDD.
 
 ### Проверка 006 на Acer: 22/22 теста и следующий инструмент 007
 
