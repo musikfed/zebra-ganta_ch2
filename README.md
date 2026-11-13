@@ -279,3 +279,15 @@ uv run python tools/inspect_extents007.py --file "T:\TestData\sample.bin"
 ```
 
 Имя `T:\TestData\sample.bin` — пример, не существующий автоматически файл. Не создавать его на T: ради проверки. Не публиковать личные пути и имена файлов.
+
+
+### Результат первой проверки №007 — без физических измерений
+
+На Acer после обновления до `2a1ab3b` подтверждено **24 Python-теста OK**. `inspect_extents007.py --file "T:\TestData\sample.bin"` в режиме по умолчанию корректно ответил `PLAN ONLY`; файловая карта не читалась. Корневая выборка `Get-ChildItem T:\ -File` пустая; **это не доказательство пустоты всего тома**. Чтобы найти существующий файл, можно выполнить только чтение метаданных:
+
+```powershell
+Get-ChildItem -LiteralPath T:\ -Force | Select-Object Mode,Name,Length
+Get-ChildItem -LiteralPath T:\ -File -Recurse -Force -ErrorAction SilentlyContinue | Select-Object -First 10 FullName,Length
+```
+
+Если файлов нет — остановиться; не создавать наборы на HGST ради карты экстентов без отдельного решения и безопасного протокола записи.
