@@ -23,3 +23,9 @@ Nominal spindle speed 7200 rpm corresponds to 120 revolutions/s, 8.33 ms/revolut
 Evaluate the whole system: read/seek costs, potential extra migration writes, energy, heat, error rates and SMART availability. Any claimed lifespan improvement requires long-term measurements rather than extrapolation from LBA jumps.
 
 **Publication rule:** technical protocols and summaries in Russian and English; book prose in Russian. All results must be labelled MEASURED, SIMULATED or SCHEMATIC, with source and reproducibility details.
+
+## Acer confirmation: workload 006 plans, not HDD measurements
+
+On 13 November 2026 the author confirmed three deterministic logical workload plans with **1,073,741,824 bytes each**. The `single` trace contains 1,024 × 1 MiB reads; `small-sequential` and `small-interleaved` each contain 4,096 × 256 KiB logical object reads, with the latter using four stream **labels**, not real concurrent I/O. All **22 Python unit tests passed** (0.089 s). This validates the request-trace preparation only; no device benchmark or Zebra acceleration was demonstrated.
+
+For experiment 007, [`tools/inspect_extents007.py`](../../tools/inspect_extents007.py) provides a guarded, default dry-run Windows metadata inspection of a single **explicit existing ordinary file on T:**. Live mode requires an explicit `--run`, checks HGST Disk 2, T:, capacities, NTFS and VIA Labs USB parent, and calls `fsutil file queryextents`. This exposes **logical NTFS allocation extents**, not magnetic sectors, track radii, servo timing or physical head positions. No writes or file-content access are implemented. Real Windows command behavior has not yet been verified; do not bypass failures.
