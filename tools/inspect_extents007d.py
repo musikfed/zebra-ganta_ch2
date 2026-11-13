@@ -16,7 +16,12 @@ from pathlib import Path, PureWindowsPath
 import subprocess
 import sys
 
-from parse_extents007 import parse_extents
+try:
+    from tools.parse_extents007 import parse_extents
+except ModuleNotFoundError:
+    # Direct script execution inserts tools/ into sys.path, while unittest
+    # imports tools.inspect_extents007d from the repository root.
+    from parse_extents007 import parse_extents
 
 EXPECTED_DISK = 0
 EXPECTED_MODEL = "AMD R5SL120G"
