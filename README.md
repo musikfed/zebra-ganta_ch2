@@ -438,3 +438,10 @@ uv run python tools/inspect_extents007.py --volume --run
 
 Порядок: `git pull --ff-only origin main` → `uv run python -m unittest discover -s tests -v` → `uv run python tools/publish_acer_raw.py` (**PLAN ONLY**) → `uv run python tools/publish_acer_raw.py --publish` (только после проверки). **Никакого чтения и записи на HGST T: NTFS**. Дальше исходные значения анализируются непосредственно через GitHub, без текстовых скриншотов и новых физических опытов.
 
+
+
+## Первичные данные 003, 008, 009 на GitHub — 13.11.2026
+
+**Подтверждено:** автор с Acer загрузил коммит `0fcdba2`; теперь опубликованы 852 оригинальных наблюдения (003: 40+40+80, 008: 512, 009: 180), плюс оригинальные summary.csv для 008 и 009. Это **не сводки, восстановленные по консоли**, а первичные CSV, доступные в [`data/raw/`](data/raw/). Полные оригинальные manifest.json остались на Acer; опубликованы только обезличенные provenance.json с SHA-256.
+
+**Новый вывод из первичных данных:** в пяти независимых запусках первая операция имела задержку **353,2152–365,6784 мс**. Это может объяснять выраженную аномалию первого чтения опыта 009 и существенную часть разницы трасс 1/4 в 008; причина пока неизвестна, нельзя уверенно называть её раскруткой шпинделя. Подробно: [аудит исходных данных и поправка первого чтения](docs/experiments/audit-real-raw-003-008-009-startup.ru.md). Инструмент для повторяемого **офлайн** анализа: [`tools/audit_original_startup.py`](tools/audit_original_startup.py), тесты [`tests/test_audit_original_startup.py`](tests/test_audit_original_startup.py). Программы не открывают NTFS T:.
