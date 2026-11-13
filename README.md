@@ -207,3 +207,8 @@ uv run python tools/report_exp004.py 'results\20261112T214543Z-exp004-usb3-orico
 ### Первичные данные опыта 004 уже доступны в GitHub
 
 Автор опубликовал оригинальные `manifest.json`, `measurements.csv`, `observations.csv`, `summary.csv` в [data/raw/exp004-usb3-orico](data/raw/exp004-usb3-orico) (коммит `6eac120`). Графики по каждой точке: [рис. 7.1 USB2/USB3](figures/fig_7_1_usb2_usb3_all_reads.svg), [рис. 3.2 near/far](figures/fig_3_2_usb3_near_far_20pairs.svg). Нечётные пары near-first и чётные far-first имеют заметно разные near-медианы (5,42945 и 18,765 мс). Протокол 004 рассматривает это как значимый эффект порядка/возможного кэширования, а не механический seek-time.
+
+
+### Как читать инженерные схемы в книге
+
+Две самостоятельные русскоязычные иллюстрации: [Рис. 3.3 — головка, дорожки и вращательное ожидание](figures/fig_3_3_hdd_seek_rotational_latency_ru.svg), [Рис. 7.2 — зонный профиль чтения HGST из собственного опыта](figures/fig_7_2_hgst_lba_speed_explained_ru.svg). Для неспециалиста опубликована [подробная легенда: что означают символы, хорошо или плохо наблюдаемое явление](docs/book/illustration-explanations-ru.md). Первая схема **условная**, вторая основана на **настоящих измерениях**; чужие графики не выдаются за свои.
