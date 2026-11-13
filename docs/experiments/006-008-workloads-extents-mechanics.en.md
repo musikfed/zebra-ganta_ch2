@@ -79,3 +79,20 @@ Cluster size is not yet reported; **if** it is 4096 bytes, allocated logical clu
 The Russian Windows output's length-label bytes appeared garbled. A new [byte-based parser](../../tools/parse_extents007.py) and [captured-map tests](../../tests/test_parse_extents007.py) count VCN runs, holes and allocated LCN discontinuities without decoding localized labels. [`tools/inspect_extents007d.py`](../../tools/inspect_extents007d.py) now emits structured JSON. The updated parser/inspector has **not yet been re-tested on Acer**.
 
 **Scope:** host NTFS allocation metadata; no new files, writes or live HDD mechanics. No empirical Zebra performance claim is made.
+
+## Primary target correction: HGST T: HDD (13 November 2026)
+
+**The actual research target remains HGST T: / Disk 2 (mechanical HDD); D: is an SSD control sample only.** The D: file `msdia80.dll` is confirmed NTFS-compressed by `compact /q`: 904,704 logical bytes stored in 585,728 bytes, consistent with 143 allocated 4,096-byte clusters. This is not HDD evidence.
+
+The author independently measured NTFS volume metadata on **T:**: NTFS 3.1; **4,096 bytes per cluster**; **512-byte logical sector** and **4,096-byte physical sector**; 122,091,775 total and 122,064,463 free clusters. No ordinary accessible user files were found for file-extent mapping on T:. It would be incorrect to invent a T: file or use D: LCNs as HGST physical layout.
+
+The latest Windows test log reports **33 tests and one module-load error** (`ModuleNotFoundError: parse_extents007`). That import has now been corrected in the D: control inspector, and the **T:-only** `tools/inspect_extents007.py` now supports `--volume` without a file path. Default behavior is **PLAN ONLY**. Explicit `--volume --run` verifies Disk 2, HGST model, recorded capacities, VIA Labs USB ancestry, NTFS and T: identity, then executes read-only `fsutil fsinfo ntfsinfo T:`. The existing `--file` mode still requires a genuinely existing T: file; no write/create/move operation is implemented.
+
+```powershell
+git pull --ff-only origin main
+uv run python -m unittest discover -s tests -v
+uv run python tools/inspect_extents007.py --volume
+uv run python tools/inspect_extents007.py --volume --run
+```
+
+These newer changes **have not yet been validated on the user's Acer**. Volume metadata is not file extent mapping, HDD head position telemetry, or proof of improved Zebra speed. **T: remains write-protected by project policy** until explicitly approved.
