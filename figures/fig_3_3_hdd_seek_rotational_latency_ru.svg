@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<rect width="1200" height="760" fill="#ffffff"/>
+<text x="56" y="55" font-family="Arial,sans-serif" font-size="30" fill="#163757" font-weight="bold">Из чего складывается время чтения HDD</text>
+<text x="56" y="86" font-family="Arial,sans-serif" font-size="18" fill="#566574">Рис. 3.3 • УСЛОВНАЯ СХЕМА • Не измерение конкретного диска</text>
+<rect x="48" y="116" rx="16" width="542" height="390" fill="#f8fbff" stroke="#c5d9e8" stroke-width="2"/>
+<text x="75" y="155" font-family="Arial,sans-serif" font-size="24" fill="#163757" font-weight="bold">1. Позиционирование головки</text>
+<text x="75" y="186" font-family="Arial,sans-serif" font-size="17" fill="#455969">Головка перемещается к нужной дорожке</text>
+<circle cx="314" cy="337" r="130" fill="#eef3f7" stroke="#536c7b" stroke-width="7"/>
+<circle cx="314" cy="337" r="94" fill="none" stroke="#8aaab7" stroke-width="3" stroke-dasharray="6 8"/>
+<circle cx="314" cy="337" r="54" fill="none" stroke="#8aaab7" stroke-width="3" stroke-dasharray="6 8"/>
+<circle cx="314" cy="337" r="12" fill="#c1d4df" stroke="#536c7b" stroke-width="3"/>
+<line x1="164" y1="447" x2="228" y2="308" stroke="#4382ad" stroke-width="20" stroke-linecap="round"/>
+<circle cx="164" cy="447" r="18" fill="#607d94"/>
+<rect x="214" y="290" width="27" height="25" rx="4" fill="#e58e35"/>
+<path d="M232,310 Q274,257 290,257" fill="none" stroke="#df842c" stroke-width="5" stroke-dasharray="10 8"/>
+<path d="M284,245 L296,255 L282,268" fill="none" stroke="#df842c" stroke-width="4"/>
+<text x="80" y="479" font-family="Arial,sans-serif" font-size="16" fill="#51616b">Синий: рычаг • оранжевый: головка/путь</text>
+<rect x="610" y="116" rx="16" width="542" height="390" fill="#f8fbff" stroke="#c5d9e8" stroke-width="2"/>
+<text x="637" y="155" font-family="Arial,sans-serif" font-size="24" fill="#163757" font-weight="bold">2. Ожидание нужного сектора</text>
+<text x="637" y="186" font-family="Arial,sans-serif" font-size="17" fill="#455969">Пластина вращается до прихода данных под головку</text>
+<circle cx="870" cy="337" r="128" fill="#eef3f7" stroke="#536c7b" stroke-width="7"/>
+<circle cx="870" cy="337" r="100" fill="none" stroke="#8aaab7" stroke-width="3"/>
+<circle cx="870" cy="337" r="70" fill="none" stroke="#8aaab7" stroke-width="3"/>
+<circle cx="870" cy="337" r="12" fill="#c1d4df" stroke="#536c7b" stroke-width="3"/>
+<path d="M940 266 A100 100 0 0 1 970 337" fill="none" stroke="#e58e35" stroke-width="14"/>
+<line x1="719" y1="443" x2="771" y2="339" stroke="#4382ad" stroke-width="20" stroke-linecap="round"/>
+<circle cx="719" cy="443" r="18" fill="#607d94"/>
+<rect x="758" y="325" width="27" height="25" rx="4" fill="#e58e35"/>
+<path d="M865,213 A126 126 0 0 1 990,298" fill="none" stroke="#e58e35" stroke-width="5" stroke-dasharray="10 8"/>
+<path d="M975,294 L992,306 L995,286" fill="none" stroke="#e58e35" stroke-width="4"/>
+<text x="642" y="479" font-family="Arial,sans-serif" font-size="16" fill="#51616b">Оранжевая дуга: искомый участок записи</text>
+<rect x="48" y="529" rx="12" width="1104" height="92" fill="#eef5fa"/>
+<text x="72" y="566" font-family="Arial,sans-serif" font-size="25" fill="#163757" font-weight="bold">Время обслуживания ≈ позиционирование + ожидание вращения + передача</text>
+<text x="72" y="598" font-family="Arial,sans-serif" font-size="17" fill="#445967">Наблюдаемая задержка Windows дополнительно зависит от USB/SATA, очереди запросов, кэша и ОС.</text>
+<text x="55" y="660" font-family="Arial,sans-serif" font-size="21" fill="#185d91" font-weight="bold">Как читать схему</text>
+<text x="55" y="691" font-family="Arial,sans-serif" font-size="18" fill="#344a5d">Меньше лишних перемещений и ожиданий обычно лучше для случайного чтения.</text>
+<text x="55" y="718" font-family="Arial,sans-serif" font-size="18" fill="#344a5d">Наши near/far-замеры не выделяют эти составляющие по отдельности.</text>
+</svg>
