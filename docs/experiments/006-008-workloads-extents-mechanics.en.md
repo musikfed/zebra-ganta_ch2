@@ -34,3 +34,10 @@ For experiment 007, [`tools/inspect_extents007.py`](../../tools/inspect_extents0
 ## Acer validation of experiment 007 (13 November 2026)
 
 The author pulled commit `2a1ab3b` and confirmed **24 unit tests passed (0.082 s)**. The default call with example `T:\TestData\sample.bin` returned **PLAN ONLY**, so no volume metadata was actually queried. A root-only, non-hidden file listing returned no entries; this **does not prove the volume is empty**, as subdirectories and hidden/system entries remain unchecked. Next action is limited to read-only enumeration with `Get-ChildItem -LiteralPath T:\ -Force` followed, only if needed, by a bounded display of recursive file entries. Do not publish private filenames, invent extents, or run `--run` on an example nonexistent path. No actual extent-mapping results exist yet.
+
+
+## HGST T: inventory after experiment 007 preparatory check (13 Nov 2026)
+
+A forced listing of the T: root returned only the hidden/system `System Volume Information` directory. A recursive file listing with `-File -Recurse -Force -ErrorAction SilentlyContinue` returned no entries. **No accessible ordinary files were found for extent mapping** under this enumeration. This does not prove that disk sectors are physically blank or that no inaccessible NTFS metadata exists; errors may have been suppressed. The extent-query `--run` stage **was not executed**. Do not inspect protected system metadata by bypassing permissions.
+
+Next experimental-design stage: an explicitly authorized noncritical test corpus (one 1 GiB file vs 4,096 × 256 KiB files) and read-only NTFS extent mapping **after** a separate, reviewed write protocol. No automatic creation or relocation on T:, no unapproved defragmentation, and no claimed physical tracks.
