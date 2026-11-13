@@ -340,3 +340,20 @@ uv run python tools/inspect_extents007d.py --file "D:\msdia80.dll" --run
 ```
 
 Если доступ запрещён — остановиться и сохранить диагностическую ошибку, без обхода разрешений. Это **логические экстенты SSD**, а не механическое положение головки HGST.
+
+### Реальное измерение 007D: карта D:\msdia80.dll
+
+Автор успешно выполнил режим `--run` на существующем `D:\msdia80.dll` — **только NTFS-метаданные**, без записи. `fsutil` выдал 28 строк: **14 выделенных пробегов** (143 кластера) и **14 невыделенных** (81 кластер, LCN `ffffffffffffffff`), вместе 224 VCN-кластера. **Все выделенные LCN смежны**, физической фрагментации в адресном пространстве тома по ним не наблюдается (нулевое число разрывов LCN). Это карта логических кластеров SSD, а не NAND-геометрия и не HDD-дорожки. Повторяющиеся группы по 16 кластеров могут объясняться NTFS-сжатием; требуется проверка атрибутов.
+
+Исправлено отображение нечитаемой локализованной подписи длины: новый [байтовый парсер](tools/parse_extents007.py) анализирует числовые поля, а [инспектор D:](tools/inspect_extents007d.py) выводит JSON с `lcn: null` для невыделенных участков и числом разрывов. [Тест](tests/test_parse_extents007.py) сохраняет числовую карту из журнала автора. Следующая проверка на Windows:
+
+```powershell
+git pull --ff-only origin main
+uv run python -m unittest discover -s tests -v
+(Get-Item -LiteralPath "D:\msdia80.dll").Attributes
+compact /q "D:\msdia80.dll"
+fsutil fsinfo ntfsinfo D:
+uv run python tools/inspect_extents007d.py --file "D:\msdia80.dll" --run
+```
+
+Эти операции читают метаданные, не изменяя файл. Ожидается 34 unit-теста; **новую версию пока не проверяли на Acer**. Подробности: [RU](docs/experiments/006-008-workloads-extents-mechanics.ru.md) / [EN](docs/experiments/006-008-workloads-extents-mechanics.en.md); [книга, глава 8](docs/book/chapter-8-data-islands-mechanics-ru.md).
