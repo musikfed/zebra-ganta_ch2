@@ -59,3 +59,23 @@ Example paths need not exist in PLAN ONLY mode. Do not append `--run` until a sp
 ## Acer validation: 30 passing tests, D: inspector still dry-run only (13 Nov 2026)
 
 The author successfully pulled commit `f291a58`; all **30 Python unit tests passed (0.089 s)**. A call to `inspect_extents007d.py` without `--run` returned **PLAN ONLY — zero file/device access**. This proves the dry-run behavior and unit-test results, not that real NTFS allocation extents were read. A small existing root-level `D:\msdia80.dll` file (904704 bytes in the author's inventory) is proposed for a first guarded metadata-only trial. Running `--run` still requires a live exact-device identity check and does not measure HDD head movement.
+
+## Measured NTFS extent map on Acer D: — 13 November 2026
+
+The author executed \`uv run python tools/inspect_extents007d.py --file "D:\msdia80.dll" --run\` successfully. The command returned **28 VCN/length/LCN runs**, alternating 14 allocated and 14 unallocated runs (LCN \`0xffffffffffffffff\`). The 14 allocated runs contain **143 clusters**, while unallocated runs contain **81 clusters**, together spanning **224 logical VCN clusters**. The first allocated LCN is \`0x1d52cd\`, and the end-exclusive allocated position is \`0x1d535c\`. **All allocated LCN runs join seamlessly: 0 LCN discontinuities.**
+
+This is a counterexample to equating *the number of extent lines* with *the number of physically scattered allocations*. The map is from SATA SSD **AMD R5SL120G**; it does not reveal SSD FTL/NAND physical geography or HDD tracks.
+
+The recurring 16-cluster VCN groups with unallocated padding are **consistent with** NTFS compression, but file compression/sparse attributes have not yet been checked. The following queries can distinguish them without changing file data:
+
+\`\`\`powershell
+(Get-Item -LiteralPath "D:\msdia80.dll").Attributes
+compact /q "D:\msdia80.dll"
+fsutil fsinfo ntfsinfo D:
+\`\`\`
+
+Cluster size is not yet reported; **if** it is 4096 bytes, allocated logical clusters represent 585,728 bytes and unallocated clusters 331,776 bytes. The author's earlier root inventory reports a 904,704-byte file. Beware compression-unit rounding.
+
+The Russian Windows output's length-label bytes appeared garbled. A new [byte-based parser](../../tools/parse_extents007.py) and [captured-map tests](../../tests/test_parse_extents007.py) count VCN runs, holes and allocated LCN discontinuities without decoding localized labels. [\`tools/inspect_extents007d.py\`](../../tools/inspect_extents007d.py) now emits structured JSON. The updated parser/inspector has **not yet been re-tested on Acer**.
+
+**Scope:** host NTFS allocation metadata; no new files, writes or live HDD mechanics. No empirical Zebra performance claim is made.
