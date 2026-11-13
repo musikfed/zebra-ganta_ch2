@@ -30,3 +30,8 @@ A disposable verified test volume; free-space inventory and backup; fail-closed 
 The existing `simulate.py` models *assumed* allocations; it does not implement on-disk Adaptive Macro Interleave. A genuine baseline vs Zebra speedup claim requires **two independently verified physical layouts** with reproducible workloads, not labels alone.
 
 **No 007B performance measurement has been conducted.**
+
+
+## Acer validation — 13 November 2026
+
+Both planned target labels (`separate-test-volume`, `hgst-t`) returned `PLAN_ONLY_NO_DISK_IO` and `target_approved_for_writes=false`, `generator_implemented=false`, `physical_access=false`. Each data variant was **1,073,741,824 useful bytes** with a **4,294,967,296-byte** planning capacity budget. The author reported **28/28 Python unit tests passed (0.080 s)**, including four corpus-planner tests. No HDD throughput or on-disk Zebra layout was tested; no write permission is implied.
