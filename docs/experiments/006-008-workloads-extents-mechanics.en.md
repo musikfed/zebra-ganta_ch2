@@ -41,3 +41,17 @@ The author pulled commit `2a1ab3b` and confirmed **24 unit tests passed (0.082 s
 A forced listing of the T: root returned only the hidden/system `System Volume Information` directory. A recursive file listing with `-File -Recurse -Force -ErrorAction SilentlyContinue` returned no entries. **No accessible ordinary files were found for extent mapping** under this enumeration. This does not prove that disk sectors are physically blank or that no inaccessible NTFS metadata exists; errors may have been suppressed. The extent-query `--run` stage **was not executed**. Do not inspect protected system metadata by bypassing permissions.
 
 Next experimental-design stage: an explicitly authorized noncritical test corpus (one 1 GiB file vs 4,096 × 256 KiB files) and read-only NTFS extent mapping **after** a separate, reviewed write protocol. No automatic creation or relocation on T:, no unapproved defragmentation, and no claimed physical tracks.
+
+## Acer D: read-only extent mapping candidate
+
+D: is NTFS on SATA SSD Disk 0 **AMD R5SL120G**, serial **12012221W1021**, disk capacity **120034123776 bytes**, volume capacity **120031539200**, free **107038748672 bytes**, volume status **Healthy**. D: includes pre-existing project directories, applications and archives and must **not** be treated as a disposable test target.
+
+The separate [tools/inspect_extents007d.py](../../tools/inspect_extents007d.py) is a guarded read-only single-file metadata inspector. Default invocation is **PLAN ONLY** with no device queries. Optional \`--run\` verifies exactly the documented D: disk, serial, NTFS and volume identity, rejects noncanonical paths and links/junctions, and invokes only \`fsutil file queryextents\`. This reveals filesystem VCN/LCN allocation, not a measured physical track map. No writes, deletes or defragmentation. Windows live validation remains pending; private filenames must not be published.
+
+\`\`\`powershell
+git pull --ff-only origin main
+uv run python -m unittest discover -s tests -v
+uv run python tools/inspect_extents007d.py --file "D:\tools\sample.bin"
+\`\`\`
+
+Example paths need not exist in PLAN ONLY mode. Do not append \`--run\` until a specific existing non-sensitive file and the tests have been reviewed.
