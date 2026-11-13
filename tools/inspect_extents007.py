@@ -16,6 +16,9 @@ import subprocess
 import sys
 from types import SimpleNamespace
 
+# Support direct execution: uv run python tools/inspect_extents007.py
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from experiment004 import verify
 from experiment005 import check_usb_parent
 from lab import DEFAULT_SIZE, powershell_json
