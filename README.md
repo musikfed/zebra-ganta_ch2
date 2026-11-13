@@ -454,3 +454,10 @@ uv run python tools/inspect_extents007.py --volume --run
 Для проверки причины разработаны [`experiment010.py`](experiment010.py), [unit-тесты](tests/test_experiment010.py) и [русский протокол №010](docs/experiments/010-first-read-open-pause-ntfs-hgst.ru.md). Новый параметр — **пауза 0/2/10 сек после открытия дескриптора физического HDD**, раздельные замеры `open_ms`, первого чтения и следующего чтения нового адреса. 9 сессий, **18 уникальных 4-КиБ чтений**, только HGST Disk 2 / **NTFS T:** через ORICO SuperSpeed, без изменения power state, форматирования и создания файлов. Не доказан конкретный механизм стартовой задержки.
 
 **После каждого изменения GitHub сначала Acer:** `git pull --ff-only origin main` → `uv run python -m unittest discover -s tests -v` → `uv run python experiment010.py` (**PLAN ONLY**). Только при успехе тестов и проверки личности HDD возможен ручной live-запуск по протоколу. **До пользовательского журнала никакой успешной физической проверки 010 не заявлять.** Полные исходные наблюдения 003/008/009 уже опубликованы в GitHub, заново копировать их не нужно.
+
+
+## Опыт 010 выполнен — получить реальные времена с Acer в GitHub
+
+Автор подтвердил успешный read-only запуск **9 сессий / 18 уникальных 4-КиБ чтений** на физическом HGST Disk 2, **T: NTFS** с ORICO USB. Результаты лежат в `F:\zebra-ganta_ch2\results\20261113T130425Z-exp010-startup-ntfs`. **Времена открытия дескриптора и первого/второго чтения отсутствуют в консольном журнале**; до импорта оригинальных CSV не публиковать выводов о причинах задержек.
+
+Для отправки добавлены [`tools/publish_exp010_acer.py`](tools/publish_exp010_acer.py), [тесты](tests/test_publish_exp010_acer.py) и [инструкция](docs/experiments/010-first-read-open-pause-ntfs-hgst.ru.md). После `git pull --ff-only origin main` и проверки unit-тестов: `uv run python tools/publish_exp010_acer.py` (PLAN ONLY), затем `uv run python tools/publish_exp010_acer.py --publish` при успешной проверке исходных файлов. Оригинальные CSV публикуются побайтно, аппаратный manifest.json не выгружается. HDD T: при этом не открывается и не изменяется.
