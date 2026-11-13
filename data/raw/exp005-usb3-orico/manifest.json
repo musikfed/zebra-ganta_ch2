@@ -1,0 +1,44 @@
+{
+  "schema": "zebra-ganta.exp005.v1",
+  "created_utc": "2026-11-13T07:00:35.575158+00:00",
+  "status": "complete",
+  "source": "real Windows raw read-only",
+  "disk": {
+    "Number": 2,
+    "FriendlyName": "HGST HTS 725050B7E630",
+    "Model": "HGST HTS 725050B7E630 SCSI Disk Device",
+    "Size": 500106780160,
+    "Win32Size": 500105249280,
+    "BusType": "USB",
+    "IsBoot": false,
+    "IsSystem": false,
+    "IsOffline": false,
+    "OperationalStatus": "Online"
+  },
+  "pnp_ancestors": [
+    "SCSI\\DISK&VEN_HGST_HTS&PROD_725050B7E630\\7&C348B32&0&000000",
+    "USB\\VID_2109&PID_0715\\MSFT30000000123B29",
+    "USB\\ROOT_HUB30\\5&800def2&0&0",
+    "PCI\\VEN_1022&DEV_15E0&SUBSYS_13781025&REV_00\\4&32f157a4&0&0341",
+    "PCI\\VEN_1022&DEV_15DB&SUBSYS_13781025&REV_00\\3&2411e6fe&0&41",
+    "ACPI\\PNP0A08\\1",
+    "ACPI_HAL\\PNP0C08\\0",
+    "ROOT\\ACPI_HAL\\0000",
+    "HTREE\\ROOT\\0"
+  ],
+  "bridge": "usb3-orico",
+  "usbview_vidpid_operator": "2109:0715",
+  "usbview_link_speed_operator": "Super",
+  "pairs": 20,
+  "seed": 20261112,
+  "rounds": "ABBA; near-far / far-near / far-near / near-far",
+  "sample_block_bytes": 4096,
+  "near_distance_bytes": 2097152,
+  "limitations": [
+    "Read-only Windows + USB latency, not pure seek time",
+    "Repeated LBA blocks can be cached by Windows, bridge or HDD",
+    "Physical radius unknown and near/far zones differ",
+    "ABBA balances order but does not eliminate warmup and cache effects",
+    "Operator must compare any new result to exp003/004 without speedup claims"
+  ]
+}
