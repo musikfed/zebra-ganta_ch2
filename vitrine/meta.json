@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "id": "zebra-ganta_ch2",
+  "title": "zebra-ganta_ch2",
+  "version": "0.1.0",
+  "description": "Независимое исследование без обещаний и гарантий ускорения. Программа изучает чтение на настоящем физическом 2,5-дюймовом HDD HGST (Disk 2), а не на симуляторе. Отдельные поздние модели являются симуляцией и не равны лабораторным замерам. Результаты могут подтвердить, не подтвердить или опровергнуть гипотезу. Это не готовый оптимизатор HDD и не док",
+  "subtitle": null,
+  "tags": [
+    "Python"
+  ],
+  "visibility": "public",
+  "publication": "publish_on_merge",
+  "public_private_approved": false,
+  "display_mode": "diagram",
+  "status": "Черновик — ожидает проверки",
+  "repo_url": "https://github.com/musikfed/zebra-ganta_ch2",
+  "screenshots": [],
+  "cover": "vitrine/generated/cover.svg",
+  "cover_type": "schematic-not-screenshot",
+  "screenshot_source": "not-available"
+}
